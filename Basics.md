@@ -13,8 +13,7 @@ There are 3 main requirements for a container to be able to define arbitrarily l
 1. It must be preserve the least-to-most-significant or most-to-least-significant order of digit.<br/>
 In C++, this translates into the container being a [SequenceContainer](https://en.cppreference.com/w/cpp/named_req/SequenceContainer).
 1. Although this will only become clear when describing the algorithms behind the mathematical operations, it must support iterating over its element in reverse.
-In C++, this translates into the container supporting [LegacyBidirectionalIterator](https://en.cppreference.com/w/cpp/named_req/BidirectionalIterator).
-being a [ReversibleContainer](https://en.cppreference.com/w/cpp/named_req/ReversibleContainer).
+In C++, this translates into the container supporting [LegacyBidirectionalIterator](https://en.cppreference.com/w/cpp/named_req/BidirectionalIterator)..
 
 Excluding container adaptors and C-style arrays, here is a list of containers from the STL, available since C++11.
 
