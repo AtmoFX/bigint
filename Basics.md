@@ -10,14 +10,14 @@ This section describes the different elements leading to the type definition for
 There are 3 main requirements for a container to be able to define arbitrarily long integers:
 
 1. It must be able to grow to any size, only limited by the amount of available memory.
-1. It must be preserve the least-to-most-significant or most-to-least-significant order of digit.<br/>
+1. It must preserve the least-to-most-significant or most-to-least-significant order of digit.<br/>
 In C++, this translates into the container being a [SequenceContainer](https://en.cppreference.com/w/cpp/named_req/SequenceContainer).
 1. Although this will only become clear when describing the algorithms behind the mathematical operations, it must support iterating over its element in reverse.
 In C++, this translates into the container supporting [LegacyBidirectionalIterator](https://en.cppreference.com/w/cpp/named_req/BidirectionalIterator)..
 
 Excluding container adaptors and C-style arrays, here is a list of containers from the STL, available since C++11.
 
-Type | Unlimited size | SequenceContainer | ReversibleContainer
+Type | Unlimited size | SequenceContainer | LegacyBidirectionalIterator
 ---|:---:|:---:|:---:
 `std::basic_string` | ✔️ | ✔️ | ✔️
 `std::deque` | ✔️ | ✔️ | ✔️
@@ -41,7 +41,7 @@ Out of the 4 possible containers, the final choice is a matter of performance. I
 Libraries found across the Internet typically use one of 3 approaches:
 
 1. Manipulate strings representing numbers, effectively implementing all the calculations in base $`10`$.
-1. Work with native integer types, which usually half of the maximal integer size natively managed by the processor (i.e. 32-bit integers for modern architecture).
+1. Work with native integer types, usually for half of the maximal integer size natively managed by the processor (i.e. 32-bit integers for modern architectures).
 1. Work with base $`1,000,000,000`$, which mixes the previous 2 approaches in that it functions in a similar way to decimal numbers but packs digits into bigger groups to better use UC capabilities.
  
 Base|Container|Memory usage|Pros|Cons
