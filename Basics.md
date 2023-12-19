@@ -13,13 +13,13 @@ There are 3 main requirements for a container to be able to define arbitrarily l
 1. It must preserve the least-to-most-significant or most-to-least-significant order of digit.<br/>
 In C++, this translates into the container being a [SequenceContainer](https://en.cppreference.com/w/cpp/named_req/SequenceContainer).
 1. Although this will only become clear when describing the algorithms behind the mathematical operations, it must support iterating over its element in reverse.
-In C++, this translates into the container supporting [LegacyBidirectionalIterator](https://en.cppreference.com/w/cpp/named_req/BidirectionalIterator)..
+In C++, this translates into the container being a [ReversibleContainer](https://en.cppreference.com/w/cpp/named_req/ReversibleContainer) supporting .
 
 Excluding container adaptors and C-style arrays, here is a list of containers from the STL, available since C++11.
 
-Type | Unlimited size | SequenceContainer | LegacyBidirectionalIterator
+Type | Unlimited size | SequenceContainer | ReversibleContainer
 ---|:---:|:---:|:---:
-`std::basic_string` | ✔️ | ✔️ | ✔️
+`std::basic_string` | ✔️ | ✔️ | ✔️[^1]
 `std::deque` | ✔️ | ✔️ | ✔️
 `std::list` | ✔️| ✔️ | ✔️
 `std::vector` | ✔️ | ✔️ | ✔️
@@ -34,9 +34,13 @@ Type | Unlimited size | SequenceContainer | LegacyBidirectionalIterator
 `std::unordered_set` | ✔️| ❌ | ❌
 `std::unordered_multiset` | ✔️| ❌ | ❌
 
-Out of the 4 possible containers, the final choice is a matter of performance. In that regard, `std::basic_string` and `std:vector` come up similarly on top.
+[^1]: As per C++ specifications, `std::basic_string` has iterators that support [LegacyBidirectionalIterator](https://en.cppreference.com/w/cpp/named_req/BidirectionalIterator) but is in fact not a Reversible container because its `begin()`/`end()`, `rbegin()`/`rend()` methods are not specified to return with constant complexity. However, all the major compilers provide constant time iterator functions, thus effectively turning `basic_string` into a ReversibleContainer and this point is widely seen as a mistake in the specifications.
 
-### Word
+Out of the 4 possible containers, the final choice is a matter of performance. In that regard, `std::basic_string` and `std:vector` come up similarly on top and can be used interchangeably.
+
+Although the reason is not obvious yet, the sequential order to store limbs is from least to most significant.
+
+### Limbs
 
 Libraries found across the Internet typically use one of 3 approaches:
 
@@ -46,12 +50,11 @@ Libraries found across the Internet typically use one of 3 approaches:
  
 Base|Container|Memory usage|Pros|Cons
 ---|---|---|---|---
- $`10`$ | `std::string` | 41.5% ( $`= log_2(10)/8`$ )<br/>(3-4 bit used for every byte[^1]) | Most natural approach.<br/>Easiest to debug thanks to storing it as text.<br/>Fastest to print in base 10. | Waste of memory.<br/>Slow due to constant offset to character `'0'`. 
- $`10^9`$ | `std::vector<uint32_t>`[^2] | 93.4%<br/>(29-30 bits used for every 4 bytes) | Still a somewhat natural approach.<br/>Fast to print in base 10. | Harder to debug than working with `string`.
- $`2^{32}`$ | `std::vector<uint32_t>`[^2] | 100% | Best memory usage.<br/>Fastest calculation. | Hardest to debug.<br/>Slow to print in base 10.
+ $`10`$ | `std::string` | 41.5% ( $`= \text{log}_2(10)/8`$ )<br/>(3-4 bit used for every byte[^2]) | Most natural approach.<br/>Easiest to debug thanks to storing it as text.<br/>Fastest to print in base 10. | Waste of memory.<br/>Slow due to constant offset to character `'0'`. 
+ $`10^9`$ | `std::vector<uint32_t>` | 93.4%<br/>(29-30 bits used for every 4 bytes) | Still a somewhat natural approach.<br/>Fast to print in base 10. | Harder to debug than working with `string`.
+ $`2^{32}`$ | `std::vector<uint32_t>` | 100% | Best memory usage.<br/>Fastest calculation. | Hardest to debug.<br/>Slow to print in base 10.
 
-[^1]: The logarithm is to represent the fact that the decimal base is less efficient than the hexadecimal base at storing big numbers with fewer digits. The hexadecimal base uses exactly 4 bits / digit, or 50% of each byte.
-[^2]: `std::vector` can be substituted for `std::basic_string`
+[^2]: The logarithm is to represent the fact that the decimal base is less efficient than the hexadecimal base at storing big numbers with fewer digits. The hexadecimal base uses exactly 4 bits / digit, or 50% of each byte.
 
 This approach chosen for this library is with 32-bit unsigned integers.
 
@@ -77,4 +80,4 @@ In other words, adding two 32-bit unsigned integers to the product of two 32-bit
 
 **This will be important for the multiplication algorithm.**
 
-Demonstration: $`\forall a,b,c,d, \text{   } 0 \leq a,b,c,d \leq 2^{32} - 1, \text{   } 0 \leq a*b+c+d \leq (2^{32} - 1) * (2^{32} - 1) + (2^{32} - 1) * 2 = (2^{32} - 1) * (2^{32} + 1) = 2^{64} - 1`$
+Demonstration: $`\forall a,b,c,d / 0 \leq a,b,c,d \leq 2^{32} - 1, 0 \leq a*b+c+d \leq (2^{32} - 1) * (2^{32} - 1) + (2^{32} - 1) * 2 = (2^{32} - 1) * (2^{32} + 1) = 2^{64} - 1`$
