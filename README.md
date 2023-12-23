@@ -6,6 +6,9 @@ To get started, download the [single header file](https://github.com/AtmoFX/bigi
 
 ## A summary of the project
 
+**Do you need thousands of digits? Millions? More? This library got you covered!<br/>
+Are you after documentation but cannot be bothered looking up for research papers? Browse the resources here.**
+
 There are already many big integer libraries out there:
 
 - GMP (The GNU Multiple Precision Arithmetic Library) is by far the most well-known, and not only for integers.
@@ -20,6 +23,7 @@ While we are at it, we aim at providing a more comprehensive documentation for t
 
 1. [Highlights](.#Highlights)
 1. [Usage](.#Usage)
+1. [Documentation](.#Documentation)
 1. [License](.#License) 
 
 ## Highlights
@@ -29,11 +33,23 @@ While we are at it, we aim at providing a more comprehensive documentation for t
   - Artithmetic: `+`, `-`, `*`, `/`, `%`
   - Comparison: `==`, `!=`, `<=`, `>=`, `<`, `>`
   - Bitwise operations: `<<`, `>>`
-- Complex functions:
-  - Factorial
-  - Fibonacci (of any order)
+- Advanced functions such as factorials.
 
 More to come in the future.
+
+## Usage
+
+## Documentation
+
+ - Basics
+ - Arithmetics
+   - Addition / Subtraction
+   - Multiplication
+   - Division / Mod
+   - Bit shift
+ - Advanced algorithms
+   - Factorials
+   - Fibonacci sequences + generalization
 
 ## License
 
