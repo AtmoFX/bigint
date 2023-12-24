@@ -1,4 +1,4 @@
-![image](https://github.com/AtmoFX/bigint/assets/154053326/5f048cd9-3cef-4709-af0b-bc1804e0f63f)# Factorial
+# Factorial
 
 ## Function signature
 
