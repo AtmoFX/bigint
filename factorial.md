@@ -46,11 +46,11 @@ For the sake of clarity, we will illustrate each step with $`n = 20`$. The table
 ### Algorithm
 
 1. Initialize the result variable $`\text{result} \leftarrow 1`$.
-2. Determine $`p`$ so that $`2^p \leq \frac{n}{3}`$. It is possible that $`2^p \leq n / 5`$.<br/>
-Example: with $`n = 20`$: $`2^3 \gt \frac{20}{3}`$ and $`2^2 \leq \frac{20}{3}`$. This means $`p = 2`$.
+2. Determine $`p`$ so that $`2^p \times 3 \leq n`$. It is possible that $`2^p \times 5 \leq n`$.<br/>
+Example: with $`n = 20`$: $`2^3 \times 3 = 24 \gt 20`$ and $`2^2 \times 3 = 12 \leq 20`$. This means $`p = 2`$.
 3. Initialize a variable $`\text{product} \leftarrow 3`$.
-4. Find the highest odd integer $`i`$ that verifies $`2^p \gt \frac{20}{i}`$. With $`n = 20`$ and $`p = 2`$, that number is $`5`$ ($`2^2 \leq \frac{20}{5}`$).<br/>
-For every **additional** odd number $`i`$ that verifies the above inequality, do $`\text{product} \leftarrow \text{product} * i`$.
+4. Find the highest odd integer $`i`$ that verifies $`2^p \times i \leq n`$. With $`n = 20`$ and $`p = 2`$, that number is $`5`$ ($`2^2 \times 5 \leq 20`$).<br/>
+For every **additional** odd number $`i`$ that verifies the above inequality, do $`\text{product} \leftarrow \text{product} \times i`$.
 5. Do $`\text{result} \leftarrow \text{result} \times \text{product}`$
 
 |1|2|3|4|5|6|7|8|9|10|11|<strike>12</strike>|13|14|15|16|17|18|19|<strike>20</strike>|
@@ -87,10 +87,13 @@ Compared to the naive approach and for big enough factorials, the number of mult
 
 With $`n = 60`$:
 
+$`\text{product} \leftarrow 1`$<br/>
+$`\text{result} \leftarrow 1`$<br/>
+
 1. First loop:<br/>
 $`p \leftarrow 4`$ ($`2^p = 16 `$)<br/>
-$`\text{product} \leftarrow 3`$<br/>
-$`\text{result} \leftarrow 3`$<br/>
+$`\text{product} \leftarrow \text{product} \times 3 = 3`$<br/>
+$`\text{result} \leftarrow \text{result} \times \text{product} = 3`$<br/>
 1 value, $`48`$, gets used up.
 
 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
@@ -147,16 +150,16 @@ $`\text{result} \leftarrow \text{result} \times \text{product} = 115,476,893,502
 |<strike>21|<strike>22</strike>|<strike>23</strike>|<strike>24</strike>|<strike>25|<strike>26</strike>|<strike>27</strike>|<strike>28</strike>|<strike>29</strike>|<strike>30</strike>|<strike>31</strike>|32|<strike>33</strike>|<strike>34</strike>|<strike>35</strike>|<strike>36</strike>|<strike>37</strike>|<strike>38</strike>|<strike>39</strike>|<strike>40</strike>|
 |<strike>41</strike>|<strike>42</strike>|<strike>43</strike>|<strike>44</strike>|<strike>45|<strike>46</strike>|<strike>47|<strike>48</strike>|<strike>49|<strike>50</strike>|<strike>51|<strike>52</strike>|<strike>53</strike>|<strike>54</strike>|<strike>55</strike>|<strike>56</strike>|<strike>57</strike>|<strike>58</strike>|<strike>59</strike>|<strike>60</strike>|
 
-6. Finalizing<br/>
-The powers of 2 we have not consumed yet account for 15 bits to shift ($`2^0`$, $`2^1`$, $`2^2`$, $`2^3`$, $`2^4`$, $`2^5`$).<br/>
+6. Finalizing:<br/>
+The powers of 2 under $`n=60`$ account for 15 bits to shift ($`2^0`$, $`2^1`$, $`2^2`$, $`2^3`$, $`2^4`$, $`2^5`$).<br/>
 During the calculation, we consumed:
-  - When $`p`$ was $`4`$: $`1`$ value.
-  - When $`p`$ was $`3`$: $`3`$ values.
-  - When $`p`$ was $`2`$: $`7`$ values.
-  - When $`p`$ was $`1`$: $`14`$ values.
+   - When $`p`$ was $`4`$: $`1`$ value.
+   - When $`p`$ was $`3`$: $`3`$ values.
+   - When $`p`$ was $`2`$: $`7`$ values.
+   - When $`p`$ was $`1`$: $`14`$ values.
 
 &emsp;This makes a total of $`15+4 \times 1+3 \times 3 +2 \times 7 + 14 = 56`$ bits. Finally,
 $`\text{result} \leftarrow \text{result} \times 2^{56}`$ by shifting bits.
-$$60! = 8,320,987,112,741,390,144,276,341,183,223,364,380,754,172,606,361,245,952,449,277,696,409,600,000,000,000,000 $$
+$$60! = 8,320,987,112,741,390,144,276,341,183,223,364,380,754,172,606,361,245,952,449,277,696,409,600,000,000,000,000$$
 
-A total of 32 multiplications were done to get $`60!`$.
+$`60`$ being relatively small, the number of multiplications used for the calculation ($`33`$) is still significantly higher than the $`n/2`$ ratio that the algorithm approaches.
