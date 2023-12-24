@@ -1,4 +1,4 @@
-# Factorial
+![image](https://github.com/AtmoFX/bigint/assets/154053326/5f048cd9-3cef-4709-af0b-bc1804e0f63f)# Factorial
 
 ## Function signature
 
@@ -82,3 +82,78 @@ Doing so at the last step saves some execution time as all the previous multipli
 ### Time savings
 
 Compared to the naive approach and for big enough factorials, the number of multiplications is only half the naive approach (the complexity is the same) and it makes better use of the optimized multiplication algorithms, as both $`\text{product}`$ and $`\text{result}`$ grow.
+
+### A complete example
+
+With $`n = 60`$:
+
+1. First loop:<br/>
+$`p \leftarrow 4`$ ($`2^p = 16 `$)<br/>
+$`\text{product} \leftarrow 3`$<br/>
+$`\text{result} \leftarrow 3`$<br/>
+1 value, $`48`$, gets used up.
+
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|
+|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40|
+|41|42|43|44|45|46|47|<strike>48</strike>|49|50|51|52|53|54|55|56|57|58|59|60|
+
+2. Second loop:<br/>
+$`p \leftarrow 3`$ ($`2^p = 8 `$)<br/>
+$`\text{product} \leftarrow \text{product} \times 5 \times 7 = 105`$<br/>
+$`\text{result} \leftarrow \text{result} \times \text{product} = 315`$<br/>
+3 values, $`24`$, $`40`$ and $`56`$, get used up, with 3 multiplications done.
+
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|
+|21|22|23|<strike>24</strike>|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|<strike>40|
+|41|42|43|44|45|46|47|<strike>48</strike>|49|50|51|52|53|54|55|<strike>56</strike>|57|58|59|60|
+
+3. Third loop:<br/>
+$`p \leftarrow 2`$ ($`2^p = 4 `$)<br/>
+$`\text{product} \leftarrow \text{product} \times 9 \times 11 \times 13 \times 15 = 2,027,025`$<br/>
+$`\text{result} \leftarrow \text{result} \times \text{product} = 638,512,875`$<br/>
+7 values, $`12`$, $`20`$, $`28`$, $`36`$, $`44`$, $`52`$ and $`60`$, get used up, with 5 multiplications done.
+
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|1|2|3|4|5|6|7|8|9|10|11|<strike>12</strike>|13|14|15|16|17|18|19|<strike>20</strike>|
+|21|22|23|<strike>24</strike>|25|26|27|<strike>28</strike>|29|30|31|32|33|34|35|<strike>36</strike>|37|38|39|<strike>40</strike>|
+|41|42|43|<strike>44</strike>|45|46|47|<strike>48</strike>|49|50|51|<strike>52</strike>|53|54|55|<strike>56</strike>|57|58|59|<strike>60</strike>|
+
+4. Fourth loop:<br/>
+$`p \leftarrow 1`$ ($`2^p = 2`$)<br/>
+$`\text{product} \leftarrow \text{product} \times 17 \times 19 \times 21 \times 23 \times 25 \times 27 \times 29 = 6,190,283,353,629,375 `$<br/>
+$`\text{result} \leftarrow \text{result} \times \text{product} = 3,952,575,621,190,533,915,703,125`$<br/>
+14 values, $`6`$, $`10`$, $`14`$, $`18`$, $`22`$, $`26`$, $`30`$, $`34`$, $`38`$, $`42`$, $`46`$, $`50`$, $`54`$ and $`58`$, get used up, with 8 multiplications done.
+
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|1|2|3|4|5|<strike>6</strike>|7|8|9|<strike>10</strike>|11|<strike>12</strike>|13|<strike>14</strike>|15|16|17|<strike>18</strike>|19|<strike>20</strike>|
+|21|<strike>22</strike>|23|<strike>24</strike>|25|<strike>26</strike>|27|<strike>28</strike>|29|<strike>30</strike>|31|32|33|<strike>34</strike>|35|<strike>36</strike>|37|<strike>38</strike>|39|<strike>40</strike>|
+|41|<strike>42</strike>|43|<strike>44</strike>|45|<strike>46</strike>|47|<strike>48</strike>|49|<strike>50</strike>|51|<strike>52</strike>|53|<strike>54</strike>|55|<strike>56</strike>|57|<strike>58</strike>|59|<strike>60</strike>|
+
+5. Fifth loop:<br/>
+$`p \leftarrow 0`$ ($`2^p = 1`$)<br/>
+$`\text{product} \leftarrow \text{product} \times 31 \times 33 \times 35 \times 37 \times 39 \times 41 \times 43 \times 45 \times 47 \times 49 \times 51 \times 53 \times 55 \times 57 = 29,215,606,371,473,169,285,018,060,091,249,259,296,875`$<br/>
+$`\text{result} \leftarrow \text{result} \times \text{product} = 115,476,893,502,183,682,653,166,335,352,659,171,719,555,028,600,718,376,458,740,234,375`$<br/>
+29 values, $`3`$, $`5`$, $`7`$, $`9`$, $`11`$, $`13`$, $`15`$, $`17`$, $`19`$, $`21`$, $`23`$, $`25`$, $`27`$, $`29`$, $`31`$, $`33`$, $`35`$, $`37`$, $`39`$, $`41`$, $`43`$, $`45`$, $`47`$, $`49`$, $`51`$, $`53`$, $`55`$, $`57`$ and $`59`$, get used up, with 15 multiplications done.
+
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|1|2|<strike>3</strike>|4|<strike>5</strike>|<strike>6</strike>|<strike>7</strike>|8|<strike>9</strike>|<strike>10</strike>|<strike>11</strike>|<strike>12</strike>|<strike>13</strike>|<strike>14</strike>|<strike>15</strike>|16|<strike>17</strike>|<strike>18</strike>|<strike>19</strike>|<strike>20</strike>|
+|<strike>21|<strike>22</strike>|<strike>23</strike>|<strike>24</strike>|<strike>25|<strike>26</strike>|<strike>27</strike>|<strike>28</strike>|<strike>29</strike>|<strike>30</strike>|<strike>31</strike>|32|<strike>33</strike>|<strike>34</strike>|<strike>35</strike>|<strike>36</strike>|<strike>37</strike>|<strike>38</strike>|<strike>39</strike>|<strike>40</strike>|
+|<strike>41</strike>|<strike>42</strike>|<strike>43</strike>|<strike>44</strike>|<strike>45|<strike>46</strike>|<strike>47|<strike>48</strike>|<strike>49|<strike>50</strike>|<strike>51|<strike>52</strike>|<strike>53</strike>|<strike>54</strike>|<strike>55</strike>|<strike>56</strike>|<strike>57</strike>|<strike>58</strike>|<strike>59</strike>|<strike>60</strike>|
+
+6. Finalizing<br/>
+The powers of 2 we have not consumed yet account for 15 bits to shift ($`2^0`$, $`2^1`$, $`2^2`$, $`2^3`$, $`2^4`$, $`2^5`$).<br/>
+During the calculation, we consumed:
+  - When $`p`$ was $`4`$: $`1`$ value.
+  - When $`p`$ was $`3`$: $`3`$ values.
+  - When $`p`$ was $`2`$: $`7`$ values.
+  - When $`p`$ was $`1`$: $`14`$ values.
+
+&emsp;This makes a total of $`15+4 \times 1+3 \times 3 +2 \times 7 + 14 = 56`$ bits.<br/>
+&emsp;$`\text{result} \leftarrow \text{result} \times 2^{56} = 8,320,987,112,741,390,144,276,341,183,223,364,380,754,172,606,361,245,952,449,277,696,409,600,000,000,000,000`$
