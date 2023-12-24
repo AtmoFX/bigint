@@ -37,7 +37,7 @@ In fact, it is possible to account for all the $`2`$'s encountered between $`1`$
 
 ### Principle
 
-Instead of the naive implementation, the implemented algorithm works "backward", with only odd numbers ($`3`$, $`5`$, $`7`$, $`9`$ ...).<br/>
+Instead of the naive implementation, the implemented algorithm works "backward", with only odd numbers ($`3`$, $`5`$, $`7`$, $`9`$ ...). All the even numbers will be managed at once, by shifting bits left.<br/>
 For the sake of clarity, we will illustrate each step with $`n = 20`$. The table below represents the factors; when used, they get crossed out.
 
 |1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|
