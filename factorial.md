@@ -26,7 +26,7 @@ bigint::bigint_t bigint::factorial(size_t n)
 ```
 
 This approach suffers from several downsides:
- - It requires `n - 1` multiplications (from `2` to `n`).<br/>
+ - It requires `n - 1` multiplications (from `2` to `n`) and importantly, some of these products are done more than once; with the algorithmic complexity of the multiplication, this is something to avoid.<br/>
 For instance, we would want $`3`$, $`6`$, $`12`$, $`24`$ (i.e. $`3`$'s multiplied by a power of $`2`$) to be processed as $`64 \times (3^2)^2`$: This requires 2 multiplications (The multiplication by $`64`$ is done through bit shifting) instead of 3. 
  - The operands passed in the successive multiplications are very different in size.<br/>
  Having one of the operand consiting of 1 or 2 limbs prevents from using the more efficient multiplication algorithms.
