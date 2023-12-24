@@ -155,7 +155,8 @@ During the calculation, we consumed:
   - When $`p`$ was $`2`$: $`7`$ values.
   - When $`p`$ was $`1`$: $`14`$ values.
 
-&emsp;This makes a total of $`15+4 \times 1+3 \times 3 +2 \times 7 + 14 = 56`$ bits.<br/>
-&emsp;Finally, $`\text{result} \leftarrow \text{result} \times 2^{56} = 8,320,987,112,741,390,144,276,341,183,223,364,380,754,172,606,361,245,952,449,277,696,409,600,000,000,000,000`$
+&emsp;This makes a total of $`15+4 \times 1+3 \times 3 +2 \times 7 + 14 = 56`$ bits. Finally,
+$`\text{result} \leftarrow \text{result} \times 2^{56}`$ by shifting bits.
+$$60! = 8,320,987,112,741,390,144,276,341,183,223,364,380,754,172,606,361,245,952,449,277,696,409,600,000,000,000,000 $$
 
 A total of 32 multiplications were done to get $`60!`$.
