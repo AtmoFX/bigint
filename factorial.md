@@ -122,8 +122,8 @@ $`\text{result} \leftarrow \text{result} \times \text{product} = 315`$<br/>
 
 3. Third loop:<br/>
 $`p \leftarrow 2`$ ($`2^p = 4 `$)<br/>
-$`\text{product} \leftarrow \text{product} \times 9 \times 11 \times 13 \times 15 = 2,027,025`$<br/>
-$`\text{result} \leftarrow \text{result} \times \text{product} = 638,512,875`$<br/>
+$`\text{product} \leftarrow \text{product} \times 9 \times 11 \times 13 \times 15 = 2{,}027{,}025`$<br/>
+$`\text{result} \leftarrow \text{result} \times \text{product} = 638{,}512{,}875`$<br/>
 7 values, $`12`$, $`20`$, $`28`$, $`36`$, $`44`$, $`52`$ and $`60`$, get used up, with 5 multiplications done.
 
 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
@@ -134,8 +134,8 @@ $`\text{result} \leftarrow \text{result} \times \text{product} = 638,512,875`$<b
 
 4. Fourth loop:<br/>
 $`p \leftarrow 1`$ ($`2^p = 2`$)<br/>
-$`\text{product} \leftarrow \text{product} \times 17 \times 19 \times 21 \times 23 \times 25 \times 27 \times 29 = 6,190,283,353,629,375 `$<br/>
-$`\text{result} \leftarrow \text{result} \times \text{product} = 3,952,575,621,190,533,915,703,125`$<br/>
+$`\text{product} \leftarrow \text{product} \times 17 \times 19 \times 21 \times 23 \times 25 \times 27 \times 29 = 6{,}190{,}283{,}353{,}629{,}375 `$<br/>
+$`\text{result} \leftarrow \text{result} \times \text{product} = 3{,}952{,}575{,}621{,}190{,}533{,}915{,}703{,}125`$<br/>
 14 values, $`6`$, $`10`$, $`14`$, $`18`$, $`22`$, $`26`$, $`30`$, $`34`$, $`38`$, $`42`$, $`46`$, $`50`$, $`54`$ and $`58`$, get used up, with 8 multiplications done.
 
 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
@@ -146,8 +146,8 @@ $`\text{result} \leftarrow \text{result} \times \text{product} = 3,952,575,621,1
 
 5. Fifth loop:<br/>
 $`p \leftarrow 0`$ ($`2^p = 1`$)<br/>
-$`\text{product} \leftarrow \text{product} \times 31 \times 33 \times 35 \times 37 \times 39 \times 41 \times 43 \times 45 \times 47 \times 49 \times 51 \times 53 \times 55 \times 57 = 29,215,606,371,473,169,285,018,060,091,249,259,296,875`$<br/>
-$`\text{result} \leftarrow \text{result} \times \text{product} = 115,476,893,502,183,682,653,166,335,352,659,171,719,555,028,600,718,376,458,740,234,375`$<br/>
+$`\text{product} \leftarrow \text{product} \times 31 \times 33 \times 35 \times 37 \times 39 \times 41 \times 43 \times 45 \times 47 \times 49 \times 51 \times 53 \times 55 \times 57 = 29{,}215{,}606{,}371{,}473{,}169{,}285{,}018{,}060{,}091{,}249{,}259{,}296{,}875`$<br/>
+$`\text{result} \leftarrow \text{result} \times \text{product} = 115{,}476{,}893{,}502{,}183{,}682{,}653{,}166{,}335{,}352{,}659{,}171{,}719{,}555{,}028{,}600{,}718{,}376{,}458{,}740{,}234{,}375`$<br/>
 29 values, $`3`$, $`5`$, $`7`$, $`9`$, $`11`$, $`13`$, $`15`$, $`17`$, $`19`$, $`21`$, $`23`$, $`25`$, $`27`$, $`29`$, $`31`$, $`33`$, $`35`$, $`37`$, $`39`$, $`41`$, $`43`$, $`45`$, $`47`$, $`49`$, $`51`$, $`53`$, $`55`$, $`57`$ and $`59`$, get used up, with 15 multiplications done.
 
 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
@@ -166,6 +166,6 @@ During the calculation, we consumed:
 
 &emsp;This makes a total of $`15+4 \times 1+3 \times 3 +2 \times 7 + 14 = 56`$ bits. Finally,
 $`\text{result} \leftarrow \text{result} \times 2^{56}`$ by shifting bits.
-$$60! = 8,320,987,112,741,390,144,276,341,183,223,364,380,754,172,606,361,245,952,449,277,696,409,600,000,000,000,000$$
+$$60! = 8{,}320{,}987{,}112{,}741{,}390{,}144{,}276{,}341{,}183{,}223{,}364{,}380{,}754{,}172{,}606{,}361{,}245{,}952{,}449{,}277{,}696{,}409{,}600{,}000{,}000{,}000{,}000$$
 
 $`60`$ being relatively small, the number of multiplications used for the calculation ($`33`$) is still significantly higher than the $`n/2`$ ratio that the algorithm approaches.
