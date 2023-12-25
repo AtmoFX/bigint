@@ -87,7 +87,7 @@ Compared to the naive approach and for big enough factorials:
  - The result is attained with half the number of multiplications required by the naive approach.<br/>
  The computational complexity is not improved by that but when every multiplication takes a measurable time, cutting their number by half is an important improvement.
  - It makes better use of the optimized multiplication algorithms, as both $`\text{product}`$ and $`\text{result}`$ grow.<br/>
- This part of the improvement results in better computational complexity: the algorithm repeats $`n`$ times a step with a better $`\text{O}(\text{M}(n))`$.
+ This part of the improvement results in better computational complexity: the algorithm repeats $`n`$ times a step with an overall better $`\text{O}(\text{M}(n))`$.
 
 ### A complete example
 
@@ -146,9 +146,9 @@ $`\text{result} \leftarrow \text{result} \times \text{product} = 3{,}952{,}575{,
 
 5. Fifth loop:<br/>
 $`p \leftarrow 0`$ ($`2^p = 1`$)<br/>
-$`\text{product} \leftarrow \text{product} \times 31 \times 33 \times 35 \times 37 \times 39 \times 41 \times 43 \times 45 \times 47 \times 49 \times 51 \times 53 \times 55 \times 57 = 29{,}215{,}606{,}371{,}473{,}169{,}285{,}018{,}060{,}091{,}249{,}259{,}296{,}875`$<br/>
+$`\text{product} \leftarrow \text{product} \times 31 \times 33 \times 35 \times 37 \times \text{...} \times 57 \times 59 = 29{,}215{,}606{,}371{,}473{,}169{,}285{,}018{,}060{,}091{,}249{,}259{,}296{,}875`$<br/>
 $`\text{result} \leftarrow \text{result} \times \text{product} = 115{,}476{,}893{,}502{,}183{,}682{,}653{,}166{,}335{,}352{,}659{,}171{,}719{,}555{,}028{,}600{,}718{,}376{,}458{,}740{,}234{,}375`$<br/>
-29 values, $`3`$, $`5`$, $`7`$, $`9`$, $`11`$, $`13`$, $`15`$, $`17`$, $`19`$, $`21`$, $`23`$, $`25`$, $`27`$, $`29`$, $`31`$, $`33`$, $`35`$, $`37`$, $`39`$, $`41`$, $`43`$, $`45`$, $`47`$, $`49`$, $`51`$, $`53`$, $`55`$, $`57`$ and $`59`$, get used up, with 15 multiplications done.
+29 values, $`3`$, $`5`$, $`7`$, $`9`$, $`11`$, $`13`$, $`15`$, $`17`$, $`19`$, $`21`$, $`23`$, $`25`$, $`27`$, $`29`$, $`31`$, $`33`$, $`35`$, $`37`$, $`39`$, $`41`$, $`43`$, $`45`$, $`47`$, $`49`$, $`51`$, $`53`$, $`55`$, $`57`$ and $`59`$, get used up, with 16 multiplications done.
 
 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -166,6 +166,12 @@ During the calculation, we consumed:
 
 &emsp;This makes a total of $`15+4 \times 1+3 \times 3 +2 \times 7 + 14 = 56`$ bits. Finally,
 $`\text{result} \leftarrow \text{result} \times 2^{56}`$ by shifting bits.
-$$60! = 8{,}320{,}987{,}112{,}741{,}390{,}144{,}276{,}341{,}183{,}223{,}364{,}380{,}754{,}172{,}606{,}361{,}245{,}952{,}449{,}277{,}696{,}409{,}600{,}000{,}000{,}000{,}000$$
 
-$`60`$ being relatively small, the number of multiplications used for the calculation ($`33`$) is still significantly higher than the $`n/2`$ ratio that the algorithm approaches.
+$$
+\begin{flalign}
+& 60! = 8{,}320{,}987{,}112{,}741{,}390{,}144{,}276{,}341{,}183{,}223{,}364{,}380{,}754{,}172{,}606{,}361{,}245{,}952{,}449{,}277{,}696{,}409{,}600{,}000{,}000{,}000{,}000 &
+\end{flalign}
+$$
+
+$`60`$ being relatively small, the number of multiplications used for the calculation ($`34`$) is still significantly higher than the $`n/2`$ ratio that the algorithm approaches.
+We can see each successive loop gets more efficient than the previous one, though.
