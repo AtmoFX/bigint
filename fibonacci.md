@@ -363,15 +363,6 @@ $`\mathscr{M}_1^4 \leftarrow
 4 & 4 & \color{red}? & -10
 \end{pmatrix}
 `$
-4. Second loop, on column 2:<br/>
-$`\mathscr{M}_1^4 \leftarrow
-\begin{pmatrix}
-3 & 13 & 9 & 1 \\
-1 & 2 & 12 & 8 \\
-8 & -7 & -6 & 4 \\
-4 & 4 & \color{red}? & -10
-\end{pmatrix}
-`$
 5. Second loop, on column 3:<br/>
 $`\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
