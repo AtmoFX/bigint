@@ -11,15 +11,45 @@ This makes it an infinite family of sequences.
 
 ## Function signature
 
-The fibonacci function is defined as:
+The fibonacci function is defined in the `bigint` namespace as:
 
 ```c++
 template <unsigned int order = 2>
 void fibonacci(std::vector<bigint_t>& result, unsigned int from, unsigned int to);
+
+template <unsigned int order = 2>
+void fibonacci(std::vector<bigint_t>& result, unsigned int from, unsigned int to, std::array<bigint_t, order> firstValues);
 ```
 
 For algorithmic complexity reasons, it returns consecutive Fibonacci numbers located at indices between `from` and `to`.<br/>
 We note $\text{fibonacci{<}}k\text{{>}}(n)$: $f^k_n$ and $\text{fibonacci}(n) = \text{fibonacci{<}}2\text{{>}}(n)$ simplified as $f_n$. 
+
+## Usage
+
+
+```c++
+using namespace bigint;
+{
+  constexpr unsigned int from = 50000, to = 55000, order = 2;
+  std::vector<bigint_t> results;
+
+  //Fibonacci numbers
+  fibonacci<order>(fiboResults, from, to);
+  //Your code here
+
+  //Lucas numbers
+  fibonacci<order>(fiboResults, from, to, {2, 1});
+  //Your code here
+}
+{
+  constexpr unsigned int index = 100000, order = 4;
+  std::vector<bigint_t> result;
+
+  //Tetranacci numbers
+  fibonacci<order>(fiboResults, index, index);
+  //Your code here
+}
+```
 
 ## Naive implementation
 
@@ -74,7 +104,6 @@ constexpr auto compile_fibonacci_values()
     std::array<std::uint64_t, N> values{ 1ul,1ul };
     for (std::size_t n{ 2ul }; n < N; ++n)
         values[n] = (values[n - 1] + values[n - 2]);
-
     return values;
 }
 
@@ -306,7 +335,7 @@ Thanks to overriding the starting point of a sequence, it is possible to save th
 
 When calculating sequences with a different starting point, the iterative algorithm and the matrix exponantiation algorithm can both be used. In both cases, the function needs the first $k$ elements, noted $e_1, e_2, \dotsc, e_k$, to be able to compute the rest of the sequence:
 - For the iterative algorithm, the function simply has to substitute the first elements defined by default by those passed to it.
-- For the matrix exponantiation algorithm, a matrix of $k \times k$ elements needs to be defined from the $k$ input parameters.
+- For the matrix exponantiation algorithm, a matrix of $k \times k$ elements needs to be defined from the $k$ input parameters.<br/>
 Interestingly, the same properties used to speed up the matrix multiplication can also be used to reconstruct the right matrix $\mathscr{M_1^k}$:
   1. For every row of the matrix, do: $`\mathscr{M}_1^k[r,1] = e_{k-r+1}`$.<br/>
   This operation automatically fills all but the last element of the last column of $\mathscr{M}_1^k$.
