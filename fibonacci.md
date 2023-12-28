@@ -310,7 +310,7 @@ Otherwise, do $r \leftarrow r-1, c \leftarrow k-1$
 The result is that for a $k \times k$ matrix multiplication, the bottom $k$ elements each require $k$ multiplications to be obtained (and $(k-1)$ additions). The $(k-1)^2$ remaining elements need 1 addition each to be obtained. The resulting computational complexity therefore is $\text{O}(k^2)$, or $\text{O}(\text{M}(n) \times k^2)$ when including the complexity of multiplications; this is true for all $k$, i.e. not simply as an asymptotic behavior (when $k$ is large enough).<br/>
 By exploiting the specific structure of the matrices, the algorithm we obtain is faster than any known general-case matrix multiplication algorithm and at least as fast as the theoretical limit[^3].
 
-[^3]: Whether matrix multiplication can be done with $\text{O}(n^2)$ complexity is an open question in mathematics.
+[^3]: Whether matrix multiplication can be done with O(k^2) complexity is an open question in mathematics.
 
 ### End-to-end approach
 
