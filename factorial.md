@@ -52,8 +52,9 @@ For the sake of clarity, we will illustrate each step with $`n = 20`$. The table
 Example: with $`n = 20`$: $`2^3 \times 3 = 24 \gt 20`$ and $`2^2 \times 3 = 12 \leq 20`$. This means $`p = 2`$.
 3. Initialize a variable $`\text{product} \leftarrow 3`$.
 4. Find the highest odd integer $`i`$ that verifies $`2^p \times i \leq n`$. With $`n = 20`$ and $`p = 2`$, that number is $`5`$ ($`2^2 \times 5 \leq 20`$).<br/>
-For every **additional** odd number $`i`$ that verifies the above inequality, do $`\text{product} \leftarrow \text{product} \times i`$.
-5. Do $`\text{result} \leftarrow \text{result} \times \text{product}`$
+Multiply every **additional** odd number $`i`$ that verifies the above inequality together, into a product variable $p$, then do $\text{product} \leftarrow \text{product} \times p$.
+ 
+6. Do $`\text{result} \leftarrow \text{result} \times \text{product}`$
 
 |1|2|3|4|5|6|7|8|9|10|11|<strike>12</strike>|13|14|15|16|17|18|19|<strike>20</strike>|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -61,7 +62,7 @@ For every **additional** odd number $`i`$ that verifies the above inequality, do
 6. If $`p > 0`$, do $`p \leftarrow p - 1`$ then go back to **step 4**.
   - At $`p = 1`$, the numbers to add to product are $`7`$ and $`9`$ and we consume all the factors that are multiples of $`2`$ without being multiples of $`4`$.<br/>
     This includes $`6`$ and $`10`$ which were already covered by $`\text{product}`$ for no computing cost at all.<br/>
-    First: $`\text{product} \leftarrow \text{product} \times 7 \times 9`$<br/>
+    First: $`\text{product} \leftarrow \text{product} \times (7 \times 9)`$<br/>
     Then $`\text{result} \leftarrow \text{result} \times \text{product}`$
     
 |1|2|3|4|5|<strike>6</strike>|7|8|9|<strike>10</strike>|11|<strike>12</strike>|13|<strike>14</strike>|15|16|17|<strike>18</strike>|19|<strike>20</strike>|
@@ -69,7 +70,7 @@ For every **additional** odd number $`i`$ that verifies the above inequality, do
 
   - At $`p = 0`$, the numbers are $`11`$, $`13`$, $`15`$, $`17`$ and $`19`$ and we consume all the factors that are not multiples of $`2`$.<br/>
     Like above, $`3`$, $`5`$, $`7`$, $`9`$ were already included in $`\text{product}`$, thus are included again.
-    First: $`\text{product} \leftarrow \text{product} \times 11 \times 13 \times 15 \times 17 \times 19`$<br/>
+    First: $`\text{product} \leftarrow \text{product} \times (11 \times 13 \times 15 \times 17 \times 19)`$<br/>
     Then $`\text{result} \leftarrow \text{result} \times \text{product}`$
 
 |1|2|<strike>3</strike>|4|<strike>5</strike>|<strike>6</strike>|<strike>7</strike>|8|<strike>9</strike>|<strike>10</strike>|<strike>11</strike>|<strike>12</strike>|<strike>13</strike>|<strike>14</strike>|<strike>15</strike>|16|<strike>17</strike>|<strike>18</strike>|<strike>19</strike>|<strike>20</strike>|
@@ -110,7 +111,7 @@ $`\text{result} \leftarrow \text{result} \times \text{product} = 3`$<br/>
 
 2. Second loop:<br/>
 $`p \leftarrow 3`$ ($`2^p = 8 `$)<br/>
-$`\text{product} \leftarrow \text{product} \times 5 \times 7 = 105`$<br/>
+$`\text{product} \leftarrow \text{product} \times (5 \times 7) = 105`$<br/>
 $`\text{result} \leftarrow \text{result} \times \text{product} = 315`$<br/>
 3 values, $`24`$, $`40`$ and $`56`$, get used up, with 3 multiplications done.
 
@@ -122,7 +123,7 @@ $`\text{result} \leftarrow \text{result} \times \text{product} = 315`$<br/>
 
 3. Third loop:<br/>
 $`p \leftarrow 2`$ ($`2^p = 4 `$)<br/>
-$`\text{product} \leftarrow \text{product} \times 9 \times 11 \times 13 \times 15 = 2{,}027{,}025`$<br/>
+$`\text{product} \leftarrow \text{product} \times (9 \times 11 \times 13 \times 15) = 2{,}027{,}025`$<br/>
 $`\text{result} \leftarrow \text{result} \times \text{product} = 638{,}512{,}875`$<br/>
 7 values, $`12`$, $`20`$, $`28`$, $`36`$, $`44`$, $`52`$ and $`60`$, get used up, with 5 multiplications done.
 
@@ -134,7 +135,7 @@ $`\text{result} \leftarrow \text{result} \times \text{product} = 638{,}512{,}875
 
 4. Fourth loop:<br/>
 $`p \leftarrow 1`$ ($`2^p = 2`$)<br/>
-$`\text{product} \leftarrow \text{product} \times 17 \times 19 \times 21 \times 23 \times 25 \times 27 \times 29 = 6{,}190{,}283{,}353{,}629{,}375 `$<br/>
+$`\text{product} \leftarrow \text{product} \times (17 \times 19 \times 21 \times 23 \times 25 \times 27 \times 29) = 6{,}190{,}283{,}353{,}629{,}375 `$<br/>
 $`\text{result} \leftarrow \text{result} \times \text{product} = 3{,}952{,}575{,}621{,}190{,}533{,}915{,}703{,}125`$<br/>
 14 values, $`6`$, $`10`$, $`14`$, $`18`$, $`22`$, $`26`$, $`30`$, $`34`$, $`38`$, $`42`$, $`46`$, $`50`$, $`54`$ and $`58`$, get used up, with 8 multiplications done.
 
@@ -146,7 +147,7 @@ $`\text{result} \leftarrow \text{result} \times \text{product} = 3{,}952{,}575{,
 
 5. Fifth loop:<br/>
 $`p \leftarrow 0`$ ($`2^p = 1`$)<br/>
-$`\text{product} \leftarrow \text{product} \times 31 \times 33 \times 35 \times 37 \times \text{...} \times 57 \times 59 = 29{,}215{,}606{,}371{,}473{,}169{,}285{,}018{,}060{,}091{,}249{,}259{,}296{,}875`$<br/>
+$`\text{product} \leftarrow \text{product} \times (31 \times 33 \times 35 \times 37 \times \text{...} \times 57 \times 59) = 29{,}215{,}606{,}371{,}473{,}169{,}285{,}018{,}060{,}091{,}249{,}259{,}296{,}875`$<br/>
 $`\text{result} \leftarrow \text{result} \times \text{product} = 115{,}476{,}893{,}502{,}183{,}682{,}653{,}166{,}335{,}352{,}659{,}171{,}719{,}555{,}028{,}600{,}718{,}376{,}458{,}740{,}234{,}375`$<br/>
 29 values, $`3`$, $`5`$, $`7`$, $`9`$, $`11`$, $`13`$, $`15`$, $`17`$, $`19`$, ..., $`51`$, $`53`$, $`55`$, $`57`$ and $`59`$, get used up, with 16 multiplications done.
 
