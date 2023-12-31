@@ -187,8 +187,9 @@ The algorithm's inputs are:
 3. Do $M \leftarrow M^2$.<br/>This is the step that gives the name, exponantiation by squaring, to the algorithm.
 4. Do $n \leftarrow \lfloor n/2 \rfloor$.
 5. If $n > 1$ go back to step 2.
-6. Do $R \leftarrow R \times F$.
-7. Return the Fibonacci numbers from the matrix.<br/>
+6. Do $R \leftarrow R \times F$.<br/>
+As a small optimization, since Fibonacci numbers are located on the leftmost and rightmost columns, this last multiplication only needs to care about the last column of $R$.
+8. Return the Fibonacci numbers from the matrix.<br/>
 The bottom-right value ($f^k_{n-1}$); the values from the left columns are $f^k_n, f^k_{n+1}, \dotsc, f^k_{n+k-1}$). Getting all these Fibonacci numbers at once is going to be useful for the [end-to-end approach](.#End-to-end approach)
 
 #### Matrices for higher order sequences
