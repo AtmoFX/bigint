@@ -3,7 +3,8 @@
 Development-wise, multiplication is an interesting operation. Finding the most efficient algorithm has been a decades-long research by many mathematicians, and has resulted in algorithms suitable for different size of integrs. This library relies on several algorithms to perform multiplication of 2 numbers:
 - [Long multiplication](https://en.wikipedia.org/wiki/Multiplication_algorithm#Long_multiplication):<br/>
 This is how we learn multiplications with several-digit-long numbers in school by taking each pair of digits from both operands, and multiply them together, with a carry.<br/>
-Computational complexity is $\text{O}(\log(n)^2)$
+Computational complexity is $\text{O}(\log(n)^2)$<br/>
+Note that out of all the algorithms used to perform multiplication, this one is the only one that performs actual integer products on the processor(other algorithms simply break down numbers into smaller units). For that reason, while the computational complexity is fixed, ensuring the raw performance of the method is as high as can be is crucial.
 - [Karatsuba](https://en.wikipedia.org/wiki/Karatsuba_algorithm ) (aka Toom-2):<br/>
 When $log(n)$ doubles, the Karatsuba algorithm trades 1 multiplication for several additions/subtractions, thus making it 3 multiplications instead of 4.
 The karatsuba algorithm is not suitable for multiplying (relatively) small numbers: it needs number of a certain side to make the 1 multiplication vs several additions/subtractions worth. <br/>
