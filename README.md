@@ -41,11 +41,6 @@ More to come in the future.
 
 ## Documentation
 
- - [About creating your own big integer library/algorithms](bigintcreation.md)<br/>
-There are already many big integer libraries out there. If you are only interested in the document I have written to create you own, be my guest. However, here is a fair warning for you, implementing the 4 basic arithmetic operations is an extremely complex topic and to say the least:<br/> <font size="5">**It is not fun.**</font><br/><br/>
-You really, really should not go with the assumption that implementing a $n \times p$ operation is easier than implementing $n^p$, just because the latter needs the former to work. It is quite the opposite in fact: the multiplication is extremely complex whereas a reasonably efficient power function can be implemented in minutes.<br/>
-If all you want is test your own algorithms on big enough values, you should simply download this library (or another), skip all the pain and have fun with your functions.
- 
  - [Basics](basics.md)<br/>
    Defined inside the `bigint` namespace, use arbitrarily large integers with the `bigint_t` class.
    Big integers can be created from regular integer types or from any `std::string` representing an integer, then manipulated normally:
