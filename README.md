@@ -41,7 +41,7 @@ More to come in the future.
 
 ## Documentation
 
- - [Basics](documentation/basics.md)<br/>
+ - [Basics](/documentation/basics.md)<br/>
    Defined inside the `bigint` namespace, use arbitrarily large integers with the `bigint_t` class.
    Big integers can be created from regular integer types or from any `std::string` representing an integer, then manipulated normally:
     ```c++
