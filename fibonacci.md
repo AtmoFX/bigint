@@ -18,7 +18,7 @@ template <unsigned int order = 2>
 void fibonacci(std::vector<bigint_t>& result, unsigned int from, unsigned int to);
 ```
 
-For algorithmic complexity reasons, it returns consecutive Fibonacci numbers located at indices between `from` and `to`.<br/>
+For performance/algorithmic complexity reasons explained below, it returns consecutive Fibonacci numbers located at indices between `from` and `to`.<br/>
 We note $\text{fibonacci{<}}k\text{{>}}(n)$: $f^k_n$ and $\text{fibonacci}(n) = \text{fibonacci{<}}2\text{{>}}(n)$ simplified as $f_n$. 
 
 ## Naive implementation
