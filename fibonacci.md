@@ -11,45 +11,15 @@ This makes it an infinite family of sequences.
 
 ## Function signature
 
-The fibonacci function is defined in the `bigint` namespace as:
+The fibonacci function is defined as:
 
 ```c++
 template <unsigned int order = 2>
 void fibonacci(std::vector<bigint_t>& result, unsigned int from, unsigned int to);
-
-template <unsigned int order = 2>
-void fibonacci(std::vector<bigint_t>& result, unsigned int from, unsigned int to, std::array<bigint_t, order> firstValues);
 ```
 
 For algorithmic complexity reasons, it returns consecutive Fibonacci numbers located at indices between `from` and `to`.<br/>
 We note $\text{fibonacci{<}}k\text{{>}}(n)$: $f^k_n$ and $\text{fibonacci}(n) = \text{fibonacci{<}}2\text{{>}}(n)$ simplified as $f_n$. 
-
-## Usage
-
-
-```c++
-using namespace bigint;
-{
-  constexpr unsigned int from = 50000, to = 55000, order = 2;
-  std::vector<bigint_t> results;
-
-  //Fibonacci numbers
-  fibonacci<order>(fiboResults, from, to);
-  //Your code here
-
-  //Lucas numbers
-  fibonacci<order>(fiboResults, from, to, {2, 1});
-  //Your code here
-}
-{
-  constexpr unsigned int index = 100000, order = 4;
-  std::vector<bigint_t> result;
-
-  //Tetranacci numbers
-  fibonacci<order>(fiboResults, index, index);
-  //Your code here
-}
-```
 
 ## Naive implementation
 
@@ -104,6 +74,7 @@ constexpr auto compile_fibonacci_values()
     std::array<std::uint64_t, N> values{ 1ul,1ul };
     for (std::size_t n{ 2ul }; n < N; ++n)
         values[n] = (values[n - 1] + values[n - 2]);
+
     return values;
 }
 
@@ -129,7 +100,7 @@ It also makes the implementation of the generalizations to the Fibonacci sequenc
 With just 2 variables, it is possible to completely get rid of the recursion from the naive algorithm.<br/>
 With this approach, $f_n$ can be obtained in $\approx n$ steps[^1].
 - Matrix exponantiation: Fibonacci numbers can also be calculated by multiplying square matrices together; the size of the matrix is the same as the order ($`2`$ for the Fibonacci sequence).<br/>
-Thanks to [exponantiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring) (e.g. $\mathscr{M}^{16} = \mathscr{M}^{2^{2^2}}$), $f_n$ can be obtained in $\approx \log(n)$ steps[^1].
+Thanks to [exponantiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring), that we have already used for the [`power` function](./power.md) and is now applied to matrices, $f_n$ can be obtained in $\approx \log(n)$ steps[^1].<br/>
 
 [^1]: Not to be mixed with algorithmic complexity, since each "step" has its own complexity.
 
@@ -187,9 +158,8 @@ The algorithm's inputs are:
 3. Do $M \leftarrow M^2$.<br/>This is the step that gives the name, exponantiation by squaring, to the algorithm.
 4. Do $n \leftarrow \lfloor n/2 \rfloor$.
 5. If $n > 1$ go back to step 2.
-6. Do $R \leftarrow R \times F$.<br/>
-As a small optimization, since Fibonacci numbers are located on the leftmost and rightmost columns, this last multiplication only needs to care about the last column of $R$.
-8. Return the Fibonacci numbers from the matrix.<br/>
+6. Do $R \leftarrow R \times F$.
+7. Return the Fibonacci numbers from the matrix.<br/>
 The bottom-right value ($f^k_{n-1}$); the values from the left columns are $f^k_n, f^k_{n+1}, \dotsc, f^k_{n+k-1}$). Getting all these Fibonacci numbers at once is going to be useful for the [end-to-end approach](.#End-to-end approach)
 
 #### Matrices for higher order sequences
@@ -219,7 +189,7 @@ $$
 #### Simplifications of the matrix multiplication
 
 When multiplying two $k \times k$ matrices, each item of the result is obtained by doing $k$ products and $k-1$ additions to sum them together. 
-Setting aside the complexity of the integer multiplication operation, this makes matrix multiplication a $\text{O}(k^3)$ operation[^2]. Hopefully, the matrices used in this algorihtm are not any matrices: as they are used to generate a sequence following a pattern, they have a pattern of their own that is the direct consequence of how $\mathscr{F}^k_1$ is structured.
+Setting aside the complexity of the multiplication operation, this makes it a $\text{O}(k^3)$ operation[^2]. Hopefully, the matrices used in this algorihtm are not any matrices: as they are used to generate a sequence following a pattern, they have a pattern of their own that is the direct consequence of how $\mathscr{F}^k_1$ is structured.
 
 [^2]: Better algorithms exist but require bigger values for $k$ than we typically expect here.
 
@@ -261,7 +231,7 @@ $\forall k,n, \forall r,c \lt k, \mathscr{F}^k_n[r,c] = \mathscr{F}^k_n[r,k] + \
 This means that except for the last row and the last column, every item of $\mathscr{F}^k_n$ can be calculated with a single addition, which is orders of magnitude faster than processing $k$ multiplications (+ $k-1$ additions).
 
 Illustration with:<br/>
-$`
+$
 \mathscr{F}^5_{10} =
 \begin{pmatrix}
 64 & 448 & 417 & 356 & 236 \\
@@ -270,9 +240,9 @@ $`
 61 & 59 & 55 & 47 & 31 \\
 31 & 30 & 28 & 24 & 16
 \end{pmatrix}
-`$
+$
 
-$`
+$
 \mathscr{F}^{10}_{12} =
 \begin{pmatrix}
 2045 & 2043 & 2039 & 2031 & 2015 & 1983 & 1919 & 1791 & 1535 & 1023 \\
@@ -286,15 +256,15 @@ $`
 8 & 8 & 8 & 8 & 8 & 8 & 8 & 7 & 6 & 4 \\
 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 3 & 2
 \end{pmatrix}
-`$
+$
 
-$`
+```math
 \begin{align*}
 \mathscr{F}_{10}^5[2,2]    & = & 228  & = & 120 + 108   & = \;\; & \mathscr{F}_{10}^5[2,5]     \;\;\;\; & + \;\;\;\; \mathscr{F}_{10}^5[3,3] \\
 \mathscr{F}_{12}^{10}[1,4] & = & 2031 & = & 1023 + 1008 & = \;\; & \mathscr{F}_{12}^{10}[1,10] \;\;\;\; & + \;\;\;\; \mathscr{F}_{12}^{10}[2,5] \\
 \mathscr{F}_{12}^{10}[3,8] & = & 448  & = & 256 + 192   & = \;\; & \mathscr{F}_{12}^{10}[3,10] \;\;\;\; & + \;\;\;\; \mathscr{F}_{12}^{10}[4,9]
 \end{align*}
-`$
+```
 
 
 The combination of the above 2 rules allows to perform the multiplication by working our way up: 
@@ -308,14 +278,14 @@ If $c>1$ do $c \leftarrow c - 1$.
 Otherwise, do $r \leftarrow r-1, c \leftarrow k-1$
 5. Go back to step 3.
 
-The result is that for a $k \times k$ matrix multiplication, the bottom $k$ elements each require $k$ multiplications to be obtained (and $(k-1)$ additions). The $(k-1)^2$ remaining elements need 1 addition each to be obtained. The resulting computational complexity therefore is $\text{O}(k^2)$, or $\text{O}(\text{M}(n) \times k^2)$ when including the complexity of integer multiplications; this is true for all $k$, i.e. not simply as an asymptotic behavior (when $k$ is large enough).<br/>
+The result is that for a $k \times k$ matrix multiplication, the bottom $k$ elements each require $k$ multiplications to be obtained (and $k-1$) additions). The $(k-1)^2$ remaining elements need 1 addition each to be obtained. The resulting computational complexity therefore is $\text{O}(k^2)$, or $\text{O}(\text{M}(n) \times k^2)$ when including the complexity of multiplications; this is true for all $k$, i.e. not simply as an asymptotic behavior (when $k$ is large enough).<br/>
 By exploiting the specific structure of the matrices, the algorithm we obtain is faster than any known general-case matrix multiplication algorithm and at least as fast as the theoretical limit[^3].
 
-[^3]: Whether matrix multiplication can be done with O(k^2) complexity is an open question in mathematics.
+[^3]: Whether matrix multiplication can be done with $\text{O}(n^2)$ complexity is an open question in mathematics.
 
 ### End-to-end approach
 
-End-to-end, Fibonacci numbers are generated by linking the matrix exponantiation algorithm to the iterative algorithm. To get consecutive Fibonacci numbers from index $m$ to index $n$:
+The end-to-end consists in linking the matrix exponantiation algorithm to the iterative algorithm. To get consecutive Fibonacci numbers from index $m$ to index $n$:
 
 1. Apply the matrix exponantiation algorithm to get values from index $m$ to $m + k$. This is done by calculating $\mathscr{F}^k_{m+1}$.
 2. If $m + k \geq n$, discard the unnecessary values, if any, and stop.<br/>
@@ -336,71 +306,78 @@ Thanks to overriding the starting point of a sequence, it is possible to save th
 
 When calculating sequences with a different starting point, the iterative algorithm and the matrix exponantiation algorithm can both be used. In both cases, the function needs the first $k$ elements, noted $e_1, e_2, \dotsc, e_k$, to be able to compute the rest of the sequence:
 - For the iterative algorithm, the function simply has to substitute the first elements defined by default by those passed to it.
-- For the matrix exponantiation algorithm, a matrix of $k \times k$ elements needs to be reconstructed from the $k$ input parameters.<br/>
-Interestingly, the same properties used to speed up the matrix multiplication can be used to build the matrix $\mathscr{M_1^k}$:
-  1. For every row $r$ of the matrix, do: $`\mathscr{M}_1^k[r,1] \leftarrow e_{k-r+1}`$.<br/>
-  This operation automatically fills all but the last element of the last column of $\mathscr{M}_1^k$.
-  2. Do $\mathscr{M}_1^k[k,k] \leftarrow e_0 = e_k - (e_1 + e_2+\dotsc+e{k-1})$
-  3. Initialize variables $r = 1, c= k-1$.
-  4. Do $\mathscr{M}_1^k[r,c] \leftarrow \mathscr{M}_1^k[r,k] + \mathscr{M}_1^k[r+1,c+1]$
-  5. If $r = c = 2$, go to step 6.<br/>
-  If $r \leq c$, do $r \leftarrow r + 1$.<br/>
-  Otherwise, do $r \leftarrow 1, c \leftarrow c-1$.
-  6. Do $r \leftarrow 3, c \leftarrow 2$.
-  7. Do $\mathscr{M}_1^k[r,c] \leftarrow \mathscr{M}_1^k[r-1,c-1] - \mathscr{M}_1^k[r,k]$.
-  8. If $r=k \text{ and } c = k-2$, stop.<br/>
-  If $r < k$, do $r \leftarrow r + 1$.
-  Otherwise, do $c \leftarrow c + 1, r \leftarrow c+1$.
-  9. Go back to step 7.
+- For the matrix exponantiation algorithm, a matrix of $k \times k$ elements needs to be defined from the $k$ input parameters.
+Interestingly, the same properties used to speed up the matrix multiplication can also be used to reconstruct the right matrix $\mathscr{M_1^k}$:
+1. For every row of the matrix, do: $\mathscr{M}_1^k[r,1] = e_{k-r+1}$.<br/>
+This operation automatically fills all but the last element of the last column of $\mathscr{M}_1^k$.
+2. Do $\mathscr{M}_1^k[k,k] = e_0 = e_k - (e_1 + e_2+\dotsc+e{k-1})$
+3. Initialize variables $r = 1, c= k-1$.
+4. Do $\mathscr{M}_1^k[r,c] \leftarrow \mathscr{M}_1^k[r,k] + \mathscr{M}_1^k[r+1,c+1]$
+5. If $r = c = 2$, go to step 6.<br/>
+If $r \leq c$, do $r \leftarrow r + 1$.<br/>
+Otherwise, do $r \leftarrow 1, c \leftarrow c-1$.
+6. Do $r \leftarrow 3, c \leftarrow 2$.
+7. Do $\mathscr{M}_1^k[r,c] \leftarrow \mathscr{M}_1^k[r-1,c-1] - \mathscr{M}_1^k[r,k]$.
+8. If $r=k \text{ and } c = k-2$, stop.<br/>
+If $r < k$, do $r \leftarrow r + 1$.
+Otherwise, do $c \leftarrow c + 1, r \leftarrow c+1$.
+9. Go back to step 7.
 
 <br/>
 
 Illustration with $k=4, e_1=4, e_2=8, e_3=1, e_4=3$
 1. Initialization:<br/>
-$`e_0 = 3 - 1 - 8- 4 = -10`$<br/>
-$`\mathscr{M}_1^4 \leftarrow
+$e_0 = 3 - 1 - 8- 4 = -10$<br/>
+$\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & \color{red}? & \color{red}? & 1 \\
 1 & \color{red}? & \color{red}? & 8 \\
 8 & \color{red}? & \color{red}? & 4 \\
 4 & \color{red}? & \color{red}? & -10
 \end{pmatrix}
-`$
+$
 2. First loop, on column 3:<br/>
-$`\mathscr{M}_1^4 \leftarrow
+$\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & \color{red}? & 9 & 1 \\
 1 & \color{red}? & 12 & 8 \\
 8 & \color{red}? & -6 & 4 \\
 4 & \color{red}? & \color{red}? & -10
 \end{pmatrix}
-`$
+$
 3. First loop, on column 2:<br/>
-$`\mathscr{M}_1^4 \leftarrow
+$\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
 8 & \color{red}? & -6 & 4 \\
 4 & \color{red}? & \color{red}? & -10
 \end{pmatrix}
-`$
+$
 4. Second loop, on column 2:<br/>
-$`\mathscr{M}_1^4 \leftarrow
+$\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
 8 & -7 & -6 & 4 \\
 4 & 4 & \color{red}? & -10
 \end{pmatrix}
-`$
+$
+4. Second loop, on column 2:<br/>
+$\mathscr{M}_1^4 \leftarrow
+\begin{pmatrix}
+3 & 13 & 9 & 1 \\
+1 & 2 & 12 & 8 \\
+8 & -7 & -6 & 4 \\
+4 & 4 & \color{red}? & -10
+\end{pmatrix}
+$
 5. Second loop, on column 3:<br/>
-$`\mathscr{M}_1^4 \leftarrow
+$\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
 8 & -7 & -6 & 4 \\
 4 & 4 & -11 & -10
 \end{pmatrix}
-`$
-
-With $\mathscr{M}_1^k$ calculated, all the algorithm now has to do is calculate:$`\mathscr{M}^k_{n+1}= (\mathscr{F}_1^k)^n \times \mathscr{M}_1^k`$. That is done the very same way as the already described matrix exponantiation algorithm.
+$
