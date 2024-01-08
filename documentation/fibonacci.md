@@ -193,7 +193,7 @@ The algorithm's inputs are:
 5. If $n > 1$ go back to step 2.
 6. Do $R \leftarrow R \times F$.
 7. Return the Fibonacci numbers from the matrix.<br/>
-The bottom-right value ($f^k_{n-1}$); the values from the left columns are $f^k_n, f^k_{n+1}, \dotsc, f^k_{n+k-1}$). Getting all these Fibonacci numbers at once is going to be useful for the [end-to-end approach](.#End-to-end approach)
+The bottom-right value ($f^k_{n-1}$); the values from the left columns are $f^k_n, f^k_{n+1}, \dotsc, f^k_{n+k-1}$.<br/>As we have seen, that is exactly how many numbers we needed.
 
 #### Matrices for higher order sequences
 
