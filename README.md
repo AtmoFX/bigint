@@ -2,7 +2,7 @@
 
 C++ header for big integers, with explanations.
 
-To get started, download the [single header file](https://github.com/AtmoFX/bigint/blob/dev/bigint.h), include it in your code, and compile however you would.
+To get started, download the [single header file](./source/bigint.h), include it in your code, and compile however you would.
 
 ## A summary of the project
 
@@ -28,7 +28,7 @@ While we are at it, we aim at providing a more comprehensive documentation for t
 
 ## Highlights
 
-- Modern C++ (compiles with C++11 / C++14 / C++17).
+- Modern C++ (compiles with C++11 / C++14 / C++17 / c++20).
 - Simple operations:  
   - Artithmetic: `+`, `-`, `*`, `/`, `%`
   - Comparison: `==`, `!=`, `<=`, `>=`, `<`, `>`
@@ -41,60 +41,77 @@ More to come in the future.
 
 ## Documentation
 
- - [Basics](./documentation/basics.md)<br/>
-   Defined inside the `bigint` namespace, use arbitrarily large integers with the `bigint_t` class.
-   Big integers can be created from regular integer types or from any `std::string` representing an integer, then manipulated normally:
-    ```c++
-    using namespace bigint;
-    bigint_t a(123456789), b(987654321),
-             c = a + b, d = c * c;
+### Basics
 
-    std::cout << d;
-    ```
- - Operators<br/>
- Arithmectic operations working for regular integers also work for big integers. The algorithms behind these operations are aimed to have fast algorithmic complexity. 
+[Type definition](./documentation/basics.md)<br/>
+Defined inside the `bigint` namespace, use arbitrarily large integers with the `bigint_t` class.
+Big integers can be created from regular integer types or from any `std::string` representing an integer, then manipulated normally:
+```c++
+using namespace bigint;
+bigint_t a(123456789), b(987654321),
+          c = a + b, d = c * c;
+
+std::cout << d;
+```
+
+### Operators
+
+ Arithmetic operations working for regular integers are overloaded to work with big integers. The algorithms behind these operations are aimed to have fast algorithmic complexity. 
  Because calculating numbers without any way to output them would make the library rather useless, stream operators render big integers as strings.
-   - [Comparison](comparison.md)<br/>
-   Big integers of any size can be compared to one another.
-   ```c++
-    using namespace bigint;
-    bigint_t a("123456789123456789123456789123456789"),
-             b("987654321987654321987654321987654321987654321");
-    bool e  = (a == b),  //false
-         ne = (a != b),  //true
-         gt = (a >  b),  //false
-         ge = (a >= b),  //false
-         lt = (a <  b),  //true
-         le = (a <= b);  //true
-    //Since C++20
-    auto ss = (a <=> b); //std::strong_ordering::less
+
+[Comparison](./documentation/comparison.md)<br/>
+Big integers of any size can be compared to one another.
+```c++
+using namespace bigint;
+bigint_t a("123456789123456789123456789123456789"),
+          b("987654321987654321987654321987654321987654321");
+bool e  = (a == b),  //false
+      ne = (a != b),  //true
+      gt = (a >  b),  //false
+      ge = (a >= b),  //false
+      lt = (a <  b),  //true
+      le = (a <= b);  //true
+//Since C++20
+auto ss = (a <=> b); //std::strong_ordering::less
+```
+
+[Addition / Subtraction](./documentation/addition_subtraction.md)<br/>
+Add/subtract big integers normally:
+    ```c++
+    bigint_t x = a + b, y = c - d;
     ```
-   - [Addition / Subtraction](addition_subtraction.md)<br/>
-   Add/subtract big integers normally:
-       ```c++
-       bigint_t x = a + b, y = c - d;
-       ```
-   - Bit-wise operations
-   - [Multiplication](multiplication.md)<br/>
+Bit-wise operations<br/>
+In progress.
+
+[Multiplication](./documentation/multiplication.md)<br/>
    Multiply big integers normally. Multiplication is a complex operation that deserves its own separate documentation.
    ```c++
    bigint_t x = a * b;
    ```
-   - Division / Mod
-   - Input/Output of a `bigint_t`
- - Advanced algorithms<br/>
+
+Division / Mod<br/>
+In progress.
+
+Input/Output of a `bigint_t`<br/>
+In progress.
+ 
+ ### Advanced algorithms
+
  The `bigint` namespace is shipped with more complex algorithms, with a non-obvious approach to ensure it outperforms naive implementations.
-   - [Power](power.md)<br/>
+
+[Power](./documentation/power.md)<br/>
    The power function calculates $n^p$, i.e. the product $n \times n \times n \times \dotsc \times n$ with itself, $n$ appearing a total of $p$ times.
       ```c++
       auto np bigint::power(123456789ULL, 62125); // 123456789 ^ 62125 
       ```
-   - [Factorials](factorial.md)<br/>
+
+[Factorials](./documentation/factorial.md)<br/>
    The factorial function calculates $n!$, i.e. the product of all natural numbers between 1 and a given $n$ (typed: `size_t`). 
       ```c++
       auto f = bigint::factorial(100000); // 100k!
       ```
-   - [Fibonacci sequence + generalizations](fibonacci.md)<br/>
+
+[Fibonacci sequence + generalization](./documentation/fibonacci.md)<br/>
    The Fibonacci sequence is a very famous sequence of integers, supported only up to its $93^\text{rd}$ element when using 64-bit integers. `bigint::fibonacci` can go way, way beyond that point using an elaborate algorithm to diminish the calculation time as much as possible.<br/>
    The algorithm is designed to produce consecutive Fibonacci numbers between 2 indices and handles 2 types of generalization of the Fibonacci sequence:
      - With custom values as first elements in the series.<br/>
@@ -107,4 +124,4 @@ More to come in the future.
 
 ## License
 
-This library is provided under [MIT license](https://github.com/AtmoFX/bigint/blob/main/License.md).
+This library is provided under [MIT license](./documentation/License.md).
