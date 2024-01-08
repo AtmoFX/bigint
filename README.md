@@ -124,4 +124,4 @@ In progress.
 
 ## License
 
-This library is provided under [MIT license](./documentation/License.md).
+This library is provided under [MIT license](./License.md).
