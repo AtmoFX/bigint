@@ -18,7 +18,7 @@ template <unsigned int order = 2>
 void fibonacci(std::vector<bigint_t>& result, unsigned int from, unsigned int to);
 ```
 
-For performance/algorithmic complexity reasons explained below, it returns consecutive Fibonacci numbers located at indices between `from` and `to`.<br/>
+For algorithmic complexity reasons, it returns consecutive Fibonacci numbers located at indices between `from` and `to`.<br/>
 We note $\text{fibonacci{<}}k\text{{>}}(n)$: $f^k_n$ and $\text{fibonacci}(n) = \text{fibonacci{<}}2\text{{>}}(n)$ simplified as $f_n$. 
 
 ## Naive implementation
@@ -110,7 +110,20 @@ It is easy to understand that the calculation of $`n`$ values of something requi
 - Even if the matrix exponantiation algorithm could be modified to calculate consecutive values with the same algorithmic complexity as the iterative algorithm, it would still be slower.<br/>
 Indeed, the iterative algorithm, knowing $f_{n-2}$ and $f_{n-1}$, can output $f_n$ in a single addition. This is faster than anything achievable with matrices.
 
+### End-to-end calculation
+
+Getting the results consists in linking the matrix exponantiation algorithm to the iterative algorithm. To get consecutive Fibonacci numbers from index $m$ to index $n$:
+
+1. Apply the matrix exponantiation algorithm to get values from index $m$ to $m + k$. This is done by calculating $\mathscr{F}^k_{m+1}$.
+2. If $m + k \geq n$, discard the unnecessary values, if any, and stop.<br/>
+Otherwise, apply the iterative algorithm, using the Fibonacci numbers obtained at step 1 to kick it off.
+
+In practice, the matrix exponantiation algorithm is called only if the index of the first Fibonacci number that must be returned is high enough. For small values, the benefit-to-cost of the exponantiation is in favor of the iterative function.
+
 ### Iterations
+
+The principle of this loop is to calculate consecutive values of the Fibonacci sequence, by performing sum of the previous, already calculated numbers.<br/>
+The corresponding function is called last but as it is much simpler, we will describe it first.
 
 #### Inputs
 
@@ -121,12 +134,30 @@ The algorithm has a number of parameters:
 
 #### Algorithm
 
-1. Let $i = 1$ and $p = 1$
-2. Do $f_i \leftarrow f_1 + f_2 + \dotsc + f_k$.
-3. If $p \geq \text{from}$, add $f_i$ to the function's output.
-4. If $i = k$, do $i \leftarrow 1$. Otherwise, do $i \leftarrow 1 + i$.
-5. Do $p \leftarrow 1 + p$
-6. If $p \leq \text{to}$, go back to step 2.
+1. Initialize $f^k_0 = 0$ and $f^k_1, f^k_2, \dotsc, f^k_k$ from the provided initial values.
+2. Add all $f^k_i / \text{from} \leq i \leq k$ to the output, if any.
+3. Let $i = k + 1$.
+4. Do $f^k_i \leftarrow f^k_{i - k} + f^k_{i - k + 1} + \dotsc + f^k_{i - 1}$.
+5. If $i \geq \text{from}$, add $f_i$ to the function's output.
+6. If $i = \text{to}$, return the output.<br/>Otherwise, do $i \leftarrow 1 + i$.
+7. If $p \leq \text{to}$, go back to step 4.
+
+#### Optimization for higher orders
+
+At higher orders of the sequence, the $k$ terms in the sum $f^k_i \leftarrow f^k_{i - k} + f^k_{i - k + 1} + \dotsc + f^k_{i - 1}$ can be optimized:
+
+$$
+\begin{align*}
+\forall i, f^k_i = \sum_{n = 1}^k f^k_{i - n} = & \text{  } \sum_{n = 1}^k f^k_{i - n} + f^k_{i-k-1} - f^k_{i-k-1} \\
+= & \text{  } f^k_{i-1} +  \sum_{n = 2}^{k +1} f^k_{i - n} - f^k_{i-k-1} \\
+= & \text{  } 2 \times f^k_{i-1} - f^k_{i-k-1} 
+\end{align*}
+$$
+
+At the cost of knowing $k+1$ consecutive elements of the Fibonacci series of order $k$ (1 more than would otherwise be required), it is possible to calculate all the next elements with only 2 basic operations; starting at $k=4$, this calculation is faster than simply applying the definition formula of the sequence.
+
+This creates a constraint on the matrix exponantiation algorithm: we must make sure it generates $k+1$ consecutive values we can use, otherwise the end-to-end calculation cannot be performed in the way we have described.<br/>
+Hopefully, as we are about to see, this is exactly what the matrix exponantiation algorithm generates.
 
 ### Matrix exponantiation
 
@@ -143,6 +174,8 @@ f_{n+1} & f_n \\
 f_n & f_{n-1}
 \end{pmatrix}
 $$
+
+Again, exponantiation by squaring allows to get the result  faster than $\text{O}(n)$, the downside being we cannot get more than $k+1$ values.
 
 #### Inputs
 
@@ -186,7 +219,7 @@ f^k_n & \cdots & f^k_{n-1}
 \end{pmatrix}
 $$
 
-#### Simplifications of the matrix multiplication
+#### Optimizations   of the matrix multiplication
 
 When multiplying two $k \times k$ matrices, each item of the result is obtained by doing $k$ products and $k-1$ additions to sum them together. 
 Setting aside the complexity of the multiplication operation, this makes it a $\text{O}(k^3)$ operation[^2]. Hopefully, the matrices used in this algorihtm are not any matrices: as they are used to generate a sequence following a pattern, they have a pattern of their own that is the direct consequence of how $\mathscr{F}^k_1$ is structured.
@@ -196,7 +229,7 @@ Setting aside the complexity of the multiplication operation, this makes it a $\
 This pattern allows to remove a substantial number of multiplications:
 
 1. $k - 1$ values appear twice:<br/>
-Values from the first column, row $r \geq 2$ are fibonacci numbers. We can find these same numbers on the last column of the matrix, at row $r - 1$.
+Values from the first column, row $r \geq 2$ are fibonacci numbers that are repeated on the last column of the matrix, at row $r - 1$.
 There is no need, during exponantiation, to do all the multiplications more than once per number.<br/>
 Additionally, there is no need to reserve memory to store these numbers twice. The matrices will be represented as a C++ array of size $k^2 - (k - 1)$ embedded into a class whose responsibility to is to turn the 1D-array into a 2D-matrix:<br/>
 Below is but a fraction of the definition of that class, to illustrate how the matrix-to-array index conversion (`M[r][c] -> A[i]`).
@@ -234,7 +267,7 @@ Illustration with:<br/>
 $
 \mathscr{F}^5_{10} =
 \begin{pmatrix}
-64 & 448 & 417 & 356 & 236 \\
+464 & 448 & 417 & 356 & 236 \\
 236 & 228 & 212 & 181 & 120 \\
  120 & 116 & 108 & 92 & 61 \\
 61 & 59 & 55 & 47 & 31 \\
@@ -283,15 +316,9 @@ By exploiting the specific structure of the matrices, the algorithm we obtain is
 
 [^3]: Whether matrix multiplication can be done with $\text{O}(n^2)$ complexity is an open question in mathematics.
 
-### End-to-end approach
 
-The end-to-end consists in linking the matrix exponantiation algorithm to the iterative algorithm. To get consecutive Fibonacci numbers from index $m$ to index $n$:
 
-1. Apply the matrix exponantiation algorithm to get values from index $m$ to $m + k$. This is done by calculating $\mathscr{F}^k_{m+1}$.
-2. If $m + k \geq n$, discard the unnecessary values, if any, and stop.<br/>
-Otherwise, apply the iterative algorithm, using the Fibonacci numbers obtained at step 1 to kick it off.
-
-#### Defining a different starting point
+### Defining a different starting point
 
 Different sequences can be generated depending on the first elements in the series. Among the common generalized sequences:
 - The Fibonacci sequence starts with $f_0 = 0, f_1 = 1$.
