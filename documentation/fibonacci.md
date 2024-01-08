@@ -232,7 +232,7 @@ This pattern allows to remove a substantial number of multiplications:
 Values from the first column, row $r \geq 2$ are fibonacci numbers that are repeated on the last column of the matrix, at row $r - 1$.
 There is no need, during exponantiation, to do all the multiplications more than once per number.<br/>
 Additionally, there is no need to reserve memory to store these numbers twice. The matrices will be represented as a C++ array of size $k^2 - (k - 1)$ embedded into a class whose responsibility to is to turn the 1D-array into a 2D-matrix:<br/>
-Below is but a fraction of the definition of that class, to illustrate how the matrix-to-array index conversion (`M[r][c] -> A[i]`).
+Below is but a fraction of the definition of that class, to illustrate how the matrix-to-array index conversion (`M[r][c]` $\rightarrow$ `A[i]`).
 ```c++
 template<typename T, unsigned int order>
 class FiboMatrix {
@@ -263,8 +263,9 @@ $$
 $\forall k,n, \forall r,c \lt k, \mathscr{F}^k_n[r,c] = \mathscr{F}^k_n[r,k] + \mathscr{F}^k_n[r+1,c +1]$<br/>
 This means that except for the last row and the last column, every item of $\mathscr{F}^k_n$ can be calculated with a single addition, which is orders of magnitude faster than processing $k$ multiplications (+ $k-1$ additions).
 
-Illustration with:<br/>
-$
+Illustration with:
+
+$$
 \mathscr{F}^5_{10} =
 \begin{pmatrix}
 464 & 448 & 417 & 356 & 236 \\
@@ -273,9 +274,9 @@ $
 61 & 59 & 55 & 47 & 31 \\
 31 & 30 & 28 & 24 & 16
 \end{pmatrix}
-$
+$$
 
-$
+$$
 \mathscr{F}^{10}_{12} =
 \begin{pmatrix}
 2045 & 2043 & 2039 & 2031 & 2015 & 1983 & 1919 & 1791 & 1535 & 1023 \\
@@ -289,7 +290,7 @@ $
 8 & 8 & 8 & 8 & 8 & 8 & 8 & 7 & 6 & 4 \\
 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 3 & 2
 \end{pmatrix}
-$
+$$
 
 ```math
 \begin{align*}
@@ -353,58 +354,65 @@ Otherwise, do $c \leftarrow c + 1, r \leftarrow c+1$.
 <br/>
 
 Illustration with $k=4, e_1=4, e_2=8, e_3=1, e_4=3$
-1. Initialization:<br/>
-$e_0 = 3 - 1 - 8- 4 = -10$<br/>
-$\mathscr{M}_1^4 \leftarrow
+1. Initialization:
+
+$$
+\begin{align*}
+e_0 = 3 - 1 - 8- 4 = -10$ \\
+\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & \color{red}? & \color{red}? & 1 \\
 1 & \color{red}? & \color{red}? & 8 \\
 8 & \color{red}? & \color{red}? & 4 \\
 4 & \color{red}? & \color{red}? & -10
 \end{pmatrix}
-$
-2. First loop, on column 3:<br/>
-$\mathscr{M}_1^4 \leftarrow
+\end{align*}
+$$
+
+2. First loop, on column 3:
+
+$$
+\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & \color{red}? & 9 & 1 \\
 1 & \color{red}? & 12 & 8 \\
 8 & \color{red}? & -6 & 4 \\
 4 & \color{red}? & \color{red}? & -10
 \end{pmatrix}
-$
-3. First loop, on column 2:<br/>
-$\mathscr{M}_1^4 \leftarrow
+$$
+
+3. First loop, on column 2:
+
+$$
+\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
 8 & \color{red}? & -6 & 4 \\
 4 & \color{red}? & \color{red}? & -10
 \end{pmatrix}
-$
-4. Second loop, on column 2:<br/>
-$\mathscr{M}_1^4 \leftarrow
+$$
+
+4. Second loop, on column 2:
+
+$$
+\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
 8 & -7 & -6 & 4 \\
 4 & 4 & \color{red}? & -10
 \end{pmatrix}
-$
-4. Second loop, on column 2:<br/>
-$\mathscr{M}_1^4 \leftarrow
-\begin{pmatrix}
-3 & 13 & 9 & 1 \\
-1 & 2 & 12 & 8 \\
-8 & -7 & -6 & 4 \\
-4 & 4 & \color{red}? & -10
-\end{pmatrix}
-$
-5. Second loop, on column 3:<br/>
-$\mathscr{M}_1^4 \leftarrow
+$$
+
+5. Second loop, on column 3:
+
+$$
+\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
 8 & -7 & -6 & 4 \\
 4 & 4 & -11 & -10
 \end{pmatrix}
-$
+$$
