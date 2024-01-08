@@ -13,11 +13,15 @@ There are already many big integer libraries out there:
 
 - GMP (The GNU Multiple Precision Arithmetic Library) is by far the most well-known, and not only for integers.
 With more than 30 years since its first release, it has become the reference to achieve the best possible performance.<br/>
-It is also a very complex piece of work, hard to include in projects (especially under Windows) and definitely not the easiest way to get an introduction to the underlying mathematics and algorithms.
-- Other libraries have a different offer: much more simple but for most of them, painfully slow.
+It is also a very complex piece of work written in C and Assembler, hard to include in modern C++ projects (especially under Windows) and definitely not the easiest way to get an introduction to the underlying mathematics and algorithms.
+- Other libraries have a different offer: much more simple but for most of them, painfully slow (there are of course fast libraries too).<br/>
+Among the flaws of these "slow" libraries, we find:
+   - Poorly written loops / memory management: some functions require only a few minutes of work to run in a fraction of the time.
+   - Lack for the more complex but also more efficient algorithms, including libraries that claim they have implemented these optimizations.
 
-**This project is an attempt at providing a better compromise**: simplicity is the main goal but not at the cost of seeing programs run until the death of the Sun.<br/>
-While we are at it, we aim at providing a more comprehensive documentation for the less sophisticated readers.
+**This project is an attempt at providing a better compromise**:<br/>
+ - Simplicity is the main goal but not at the cost of seeing programs run until the death of the Sun. This is very much a work in progress and a lot is yet to be implemented; based on the history of GMP, it may never end.
+ - While we are at it, we aim at providing a more comprehensive documentation for the less sophisticated readers. We hope to make it a good introduction for before who have not dived into research papers yet.
 
 ## ToC
 
@@ -77,17 +81,18 @@ auto ss = (a <=> b); //std::strong_ordering::less
 
 [Addition / Subtraction](./documentation/addition_subtraction.md)<br/>
 Add/subtract big integers normally:
-    ```c++
-    bigint_t x = a + b, y = c - d;
-    ```
+```c++
+bigint_t x = a + b, y = c - d;
+```
+
 Bit-wise operations<br/>
 In progress.
 
 [Multiplication](./documentation/multiplication.md)<br/>
-   Multiply big integers normally. Multiplication is a complex operation that deserves its own separate documentation.
-   ```c++
-   bigint_t x = a * b;
-   ```
+Multiply big integers normally. Multiplication is a complex operation that deserves its own separate documentation.
+```c++
+bigint_t x = a * b;
+```
 
 Division / Mod<br/>
 In progress.
@@ -100,28 +105,29 @@ In progress.
  The `bigint` namespace is shipped with more complex algorithms, with a non-obvious approach to ensure it outperforms naive implementations.
 
 [Power](./documentation/power.md)<br/>
-   The power function calculates $n^p$, i.e. the product $n \times n \times n \times \dotsc \times n$ with itself, $n$ appearing a total of $p$ times.
-      ```c++
-      auto np bigint::power(123456789ULL, 62125); // 123456789 ^ 62125 
-      ```
+The power function calculates $n^p$, i.e. the product $n \times n \times n \times \dotsc \times n$ with itself, $n$ appearing a total of $p$ times.
+```c++
+auto np bigint::power(123456789ULL, 62125); // 123456789 ^ 62125 
+```
 
 [Factorials](./documentation/factorial.md)<br/>
-   The factorial function calculates $n!$, i.e. the product of all natural numbers between 1 and a given $n$ (typed: `size_t`). 
-      ```c++
-      auto f = bigint::factorial(100000); // 100k!
-      ```
+The factorial function calculates $n!$, i.e. the product of all natural numbers between 1 and a given $n$ (typed: `size_t`). 
+```c++
+auto f = bigint::factorial(100000); // 100k!
+```
 
 [Fibonacci sequence + generalization](./documentation/fibonacci.md)<br/>
-   The Fibonacci sequence is a very famous sequence of integers, supported only up to its $93^\text{rd}$ element when using 64-bit integers. `bigint::fibonacci` can go way, way beyond that point using an elaborate algorithm to diminish the calculation time as much as possible.<br/>
-   The algorithm is designed to produce consecutive Fibonacci numbers between 2 indices and handles 2 types of generalization of the Fibonacci sequence:
-     - With custom values as first elements in the series.<br/>
-     This allows the algorithm to generate Lucas numbers, other Fibonacci-like sequences and to have a stop&resume capability.<br/>
-     That latter use of the input parameters allows to greatly decrease memory usage when generating large portions of the sequence (demonstrated in the example below): break the portion down into smaller segments, only keeping the last 2 numbers and let the memory be cleaned as the other numbers go out of scope.
-     - With higher order of numbers: generate a sequence where each number is the sum of the $k$, instead of only 2, elements preceding it.
-   ```c+
-   auto f = bigint::factorial(500000);
-   ```
+The Fibonacci sequence is a very famous sequence of integers, supported only up to its $93^\text{rd}$ element when using 64-bit unsigned integers. `bigint::fibonacci` can go way, way beyond that point using an elaborate algorithm to diminish the calculation time as much as possible.<br/>
+The algorithm is designed to produce consecutive Fibonacci numbers between 2 indices and handles 2 types of generalization of the Fibonacci sequence:
+  - With custom values as first elements in the series.<br/>
+  This allows the algorithm to generate Lucas numbers, other Fibonacci-like sequences and to have a stop&resume capability.<br/>
+  That latter use of the input parameters allows to greatly decrease memory usage when generating large portions of the sequence (demonstrated in the example below): break the portion down into smaller segments, only keeping the last 2 numbers and let the memory be cleaned as the other numbers go out of scope.
+  - With higher order of numbers: generate a sequence where each number is the sum of the $k$, instead of only 2, elements preceding it.
+
+```c+
+auto f = bigint::factorial(500000);
+```
 
 ## License
 
-This library is provided under [MIT license](./License.md).
+This library is provided under [MIT license](./documentation/License.md).
