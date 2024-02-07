@@ -105,13 +105,15 @@ In progress.
  The `bigint` namespace is shipped with more complex algorithms, with a non-obvious approach to ensure it outperforms naive implementations.
 
 [Power](/AtmoFX/bigint/blob/master/documentation/power.md)<br/>
-The power function calculates $n^p = n \times n \times n \times \dotsc \times n$ with itself, $n$ appearing a total of $p$ times.
+The power function calculates $n^p = n \times n \times n \times \dotsc \times n$ with itself, $n$ appearing a total of $p$ times.<br/>
+This is done with a complexity of $\text{O}(\text{log}(p))$.
 ```c++
 auto np bigint::power(123456789ULL, 62125); // 123456789 ^ 62125 
 ```
 
 [Factorials](/AtmoFX/bigint/blob/master/documentation/factorial.md)<br/>
-The factorial function calculates $n! = 1 \times 2 \times 3 \times \dotsc \times n$ (typed: `size_t`). 
+The factorial function calculates $n! = 1 \times 2 \times 3 \times \dotsc \times n$ (typed: `size_t`).<br/>
+The function uses about half the multiplications that would normally be required for this calculation.
 ```c++
 auto f = bigint::factorial(100000); // 100k!
 ```
