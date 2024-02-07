@@ -53,7 +53,7 @@ This is not going to be used in the final product but we need it for the next st
 Same as above, this is only useful to get to the next step of the calculation.
 6. For $i = 4$, we calculate $3^{2^4} = 6{,}561 \times 6{,}561 = 43{,}046{,}721$.
 7. We have now covered all the digits of $19$.<br/>
-We can calculate $3^{19} = 3 \times 9 \times 43{,}046{,}721 = 1{,}162{,}261{,}467$.
+Since $19 =2^0 + 2^1 + 2^4$, we can calculate $3^{19} = 3 \times 9 \times 43{,}046{,}721 = 1{,}162{,}261{,}467$.
 
 The algorithm uses $\lfloor log_2(p) \rfloor$ squaring operations and at most $\lfloor log_2(p) \rfloor$ multiplications for the final product (it depends how many binary digits of $p$ are $1$).In the above case, the result was obtained with 6 multiplications, instead of 18 for the naive case.<br/>
 In other words, setting aside the complexity of the multiplication operation, this algorithm has a complexity of $O(log(p))$.
