@@ -130,4 +130,4 @@ auto f = bigint::factorial(500000);
 
 ## License
 
-This library is provided under [MIT license](/AtmoFX/bigint/blob/master/License.md).
+This library and its associated documentation are separately provided under [MIT license](/AtmoFX/bigint/blob/master/License.md).
