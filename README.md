@@ -21,7 +21,7 @@ Among the flaws of these "slow" libraries, we find:
 
 **This project is an attempt at providing a better compromise**:<br/>
  - Simplicity is the main goal but not at the cost of seeing programs run until the death of the Sun. This is very much a work in progress and a lot is yet to be implemented; based on the history of GMP, it may never end.
- - While we are at it, we aim at providing a more comprehensive documentation for the less sophisticated readers. We hope to make it a good introduction for before who have not dived into research papers yet.
+ - While we are at it, we aim at providing a more comprehensive documentation for the less sophisticated readers. We hope to make it a good introduction for those who have not dived into research papers yet.
 
 ## ToC
 
@@ -70,11 +70,11 @@ using namespace bigint;
 bigint_t a("123456789123456789123456789123456789"),
           b("987654321987654321987654321987654321987654321");
 bool e  = (a == b),  //false
-      ne = (a != b),  //true
-      gt = (a >  b),  //false
-      ge = (a >= b),  //false
-      lt = (a <  b),  //true
-      le = (a <= b);  //true
+     ne = (a != b),  //true
+     gt = (a >  b),  //false
+     ge = (a >= b),  //false
+     lt = (a <  b),  //true
+     le = (a <= b);  //true
 //Since C++20
 auto ss = (a <=> b); //std::strong_ordering::less
 ```
@@ -105,27 +105,26 @@ In progress.
  The `bigint` namespace is shipped with more complex algorithms, with a non-obvious approach to ensure it outperforms naive implementations.
 
 [Power](/AtmoFX/bigint/blob/master/documentation/power.md)<br/>
-The power function calculates $n^p$, i.e. the product $n \times n \times n \times \dotsc \times n$ with itself, $n$ appearing a total of $p$ times.
+The power function calculates $n^p = n \times n \times n \times \dotsc \times n$ with itself, $n$ appearing a total of $p$ times.
 ```c++
 auto np bigint::power(123456789ULL, 62125); // 123456789 ^ 62125 
 ```
 
 [Factorials](/AtmoFX/bigint/blob/master/documentation/factorial.md)<br/>
-The factorial function calculates $n!$, i.e. the product of all natural numbers between 1 and a given $n$ (typed: `size_t`). 
+The factorial function calculates $n! = 1 \times 2 \times 3 \times \dotsc \times n$ (typed: `size_t`). 
 ```c++
 auto f = bigint::factorial(100000); // 100k!
 ```
 
 [Fibonacci sequence + generalization](/AtmoFX/bigint/blob/master/documentation/fibonacci.md)<br/>
-The Fibonacci sequence is a very famous sequence of integers, supported only up to its $93^\text{rd}$ element when using 64-bit unsigned integers. `bigint::fibonacci` can go way, way beyond that point using an elaborate algorithm to diminish the calculation time as much as possible.<br/>
+The Fibonacci sequence is a very famous sequence of integers, supported only up to its 93<sup>rd</sup> element when using 64-bit unsigned integers. `bigint::fibonacci` can go way, way beyond that point using an elaborate algorithm to diminish the calculation time as much as possible.<br/>
 The algorithm is designed to produce consecutive Fibonacci numbers between 2 indices and handles 2 types of generalization of the Fibonacci sequence:
   - With custom values as first elements in the series.<br/>
-  This allows the algorithm to generate Lucas numbers, other Fibonacci-like sequences and to have a stop&resume capability.<br/>
-  That latter use of the input parameters allows to greatly decrease memory usage when generating large portions of the sequence (demonstrated in the example below): break the portion down into smaller segments, only keeping the last 2 numbers and let the memory be cleaned as the other numbers go out of scope.
-  - With higher order of numbers: generate a sequence where each number is the sum of the $k$, instead of only 2, elements preceding it.
+  This allows the algorithm to generate Lucas numbers, other Fibonacci-like sequences and to have a stop&resume capability.
+  - With higher order: generate a sequence where each number is the sum of the $k$, instead of only 2, elements preceding it.
 
 ```c+
-auto f = bigint::factorial(500000);
+auto f = bigint::fibonacci(500000);
 ```
 
 ## License
