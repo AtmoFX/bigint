@@ -48,12 +48,12 @@ Illustration for $3^{19}$:
 2. We start with $i = 0$, i.e. $3^{2^0} = 3$.
 3. For $i = 1$, we calculate $3^{2^1} = 3 \times 3 = 9$.
 4. For $i = 2$, we calculate $3^{2^2} = 9 \times 9 = 81$.<br/>
-This is not going to be used in the final product but we need it for the next step of the calculation.
+$2^2$ does not enter into the decomposition of 19; this is not going to be used in the final product but we need it for the next step of the calculation.
 5. For $i = 3$, we calculate $3^{2^3} = 81 \times 81 = 6{,}561$.<br/>
 Same as above, this is only useful to get to the next step of the calculation.
 6. For $i = 4$, we calculate $3^{2^4} = 6{,}561 \times 6{,}561 = 43{,}046{,}721$.
 7. We have now covered all the digits of $19$.<br/>
-Since $19 =2^0 + 2^1 + 2^4$, we can calculate $3^{19} = 3 \times 9 \times 43{,}046{,}721 = 1{,}162{,}261{,}467$.
+We can calculate $3^{19} = 3 \times 9 \times 43{,}046{,}721 = 1{,}162{,}261{,}467$.
 
 The algorithm uses $\lfloor log_2(p) \rfloor$ squaring operations and at most $\lfloor log_2(p) \rfloor$ multiplications for the final product (it depends how many binary digits of $p$ are $1$).In the above case, the result was obtained with 6 multiplications, instead of 18 for the naive case.<br/>
 In other words, setting aside the complexity of the multiplication operation, this algorithm has a complexity of $O(log(p))$.
