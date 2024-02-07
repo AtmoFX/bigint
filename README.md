@@ -47,7 +47,7 @@ More to come in the future.
 
 ### Basics
 
-[Type definition](./documentation/basics.md)<br/>
+[Type definition](/AtmoFX/bigint/blob/master/documentation/basics.md)<br/>
 Defined inside the `bigint` namespace, use arbitrarily large integers with the `bigint_t` class.
 Big integers can be created from regular integer types or from any `std::string` representing an integer, then manipulated normally:
 ```c++
@@ -63,7 +63,7 @@ std::cout << d;
  Arithmetic operations working for regular integers are overloaded to work with big integers. The algorithms behind these operations are aimed to have fast algorithmic complexity. 
  Because calculating numbers without any way to output them would make the library rather useless, stream operators render big integers as strings.
 
-[Comparison](./documentation/comparison.md)<br/>
+[Comparison](/AtmoFX/bigint/blob/master/documentation/comparison.md)<br/>
 Big integers of any size can be compared to one another.
 ```c++
 using namespace bigint;
@@ -79,7 +79,7 @@ bool e  = (a == b),  //false
 auto ss = (a <=> b); //std::strong_ordering::less
 ```
 
-[Addition / Subtraction](./documentation/addition_subtraction.md)<br/>
+[Addition / Subtraction](/AtmoFX/bigint/blob/master/documentation/addition_subtraction.md)<br/>
 Add/subtract big integers normally:
 ```c++
 bigint_t x = a + b, y = c - d;
@@ -88,7 +88,7 @@ bigint_t x = a + b, y = c - d;
 Bit-wise operations<br/>
 In progress.
 
-[Multiplication](./documentation/multiplication.md)<br/>
+[Multiplication](/AtmoFX/bigint/blob/master/documentation/multiplication.md)<br/>
 Multiply big integers normally. Multiplication is a complex operation that deserves its own separate documentation.
 ```c++
 bigint_t x = a * b;
@@ -104,19 +104,19 @@ In progress.
 
  The `bigint` namespace is shipped with more complex algorithms, with a non-obvious approach to ensure it outperforms naive implementations.
 
-[Power](./documentation/power.md)<br/>
+[Power](/AtmoFX/bigint/blob/master/documentation/power.md)<br/>
 The power function calculates $n^p$, i.e. the product $n \times n \times n \times \dotsc \times n$ with itself, $n$ appearing a total of $p$ times.
 ```c++
 auto np bigint::power(123456789ULL, 62125); // 123456789 ^ 62125 
 ```
 
-[Factorials](./documentation/factorial.md)<br/>
+[Factorials](/AtmoFX/bigint/blob/master/documentation/factorial.md)<br/>
 The factorial function calculates $n!$, i.e. the product of all natural numbers between 1 and a given $n$ (typed: `size_t`). 
 ```c++
 auto f = bigint::factorial(100000); // 100k!
 ```
 
-[Fibonacci sequence + generalization](./documentation/fibonacci.md)<br/>
+[Fibonacci sequence + generalization](/AtmoFX/bigint/blob/master/documentation/fibonacci.md)<br/>
 The Fibonacci sequence is a very famous sequence of integers, supported only up to its $93^\text{rd}$ element when using 64-bit unsigned integers. `bigint::fibonacci` can go way, way beyond that point using an elaborate algorithm to diminish the calculation time as much as possible.<br/>
 The algorithm is designed to produce consecutive Fibonacci numbers between 2 indices and handles 2 types of generalization of the Fibonacci sequence:
   - With custom values as first elements in the series.<br/>
@@ -130,4 +130,4 @@ auto f = bigint::factorial(500000);
 
 ## License
 
-This library is provided under [MIT license](./documentation/License.md).
+This library is provided under [MIT license](/AtmoFX/bigint/blob/master/License.md).
