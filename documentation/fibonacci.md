@@ -225,7 +225,7 @@ $$
 When multiplying two $k \times k$ matrices, each item of the result is obtained by doing $k$ products and $k-1$ additions to sum them together. 
 Setting aside the complexity of the multiplication operation, this makes it a $\text{O}(k^3)$ operation[^2]. Hopefully, the matrices used in this algorihtm are not any matrices: as they are used to generate a sequence following a pattern, they have a pattern of their own that is the direct consequence of how $\mathscr{F}^k_1$ is structured.
 
-[^2]: Better algorithms exist but require bigger values for $k$ than we typically expect here.
+[^2]: Better algorithms exist but require bigger values for k than we typically expect here.
 
 This pattern allows to remove a substantial number of multiplications:
 
@@ -264,8 +264,9 @@ $$
 $\forall k,n, \forall r,c \lt k, \mathscr{F}^k_n[r,c] = \mathscr{F}^k_n[r,k] + \mathscr{F}^k_n[r+1,c +1]$<br/>
 This means that except for the last row and the last column, every item of $\mathscr{F}^k_n$ can be calculated with a single addition, which is orders of magnitude faster than processing $k$ multiplications (+ $k-1$ additions).
 
-Illustration with:<br/>
-$
+Illustration with:
+
+$$
 \mathscr{F}^5_{10} =
 \begin{pmatrix}
 464 & 448 & 417 & 356 & 236 \\
@@ -274,9 +275,9 @@ $
 61 & 59 & 55 & 47 & 31 \\
 31 & 30 & 28 & 24 & 16
 \end{pmatrix}
-$
+$$
 
-$
+$$
 \mathscr{F}^{10}_{12} =
 \begin{pmatrix}
 2045 & 2043 & 2039 & 2031 & 2015 & 1983 & 1919 & 1791 & 1535 & 1023 \\
@@ -290,7 +291,7 @@ $
 8 & 8 & 8 & 8 & 8 & 8 & 8 & 7 & 6 & 4 \\
 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 3 & 2
 \end{pmatrix}
-$
+$$
 
 ```math
 \begin{align*}
@@ -315,7 +316,7 @@ Otherwise, do $r \leftarrow r-1, c \leftarrow k-1$
 The result is that for a $k \times k$ matrix multiplication, the bottom $k$ elements each require $k$ multiplications to be obtained (and $k-1$) additions). The $(k-1)^2$ remaining elements need 1 addition each to be obtained. The resulting computational complexity therefore is $\text{O}(k^2)$, or $\text{O}(\text{M}(n) \times k^2)$ when including the complexity of multiplications; this is true for all $k$, i.e. not simply as an asymptotic behavior (when $k$ is large enough).<br/>
 By exploiting the specific structure of the matrices, the algorithm we obtain is faster than any known general-case matrix multiplication algorithm and at least as fast as the theoretical limit[^3].
 
-[^3]: Whether matrix multiplication can be done with $\text{O}(n^2)$ complexity is an open question in mathematics.
+[^3]: Whether matrix multiplication can be done with O(n<sup>2</sup>) complexity is an open question in mathematics.
 
 
 
@@ -336,7 +337,7 @@ When calculating sequences with a different starting point, the iterative algori
 - For the iterative algorithm, the function simply has to substitute the first elements defined by default by those passed to it.
 - For the matrix exponantiation algorithm, a matrix of $k \times k$ elements needs to be defined from the $k$ input parameters.
 Interestingly, the same properties used to speed up the matrix multiplication can also be used to reconstruct the right matrix $\mathscr{M_1^k}$:
-1. For every row of the matrix, do: $\mathscr{M}_1^k[r,1] = e_{k-r+1}$.<br/>
+1. For every row of the matrix, do: $`\mathscr{M}_1^k[r,1] = e_{k-r+1}`$.<br/>
 This operation automatically fills all but the last element of the last column of $\mathscr{M}_1^k$.
 2. Do $\mathscr{M}_1^k[k,k] = e_0 = e_k - (e_1 + e_2+\dotsc+e{k-1})$
 3. Initialize variables $r = 1, c= k-1$.
