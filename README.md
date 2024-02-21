@@ -105,7 +105,7 @@ In progress.
  The `bigint` namespace is shipped with more complex algorithms, with a non-obvious approach to ensure it outperforms naive implementations.
 
 [Power](/AtmoFX/bigint/blob/master/documentation/power.md)<br/>
-The power function calculates $n^p = n \times n \times n \times \dotsc \times n$ with itself, $n$ appearing a total of $p$ times.<br/>
+The power function calculates $n^p = \overbrace{n \times n \times n \times \dotsc \times n}^{p\text{ times}}$.<br/>
 This is done with a complexity of $\text{O}(\text{log}(p))$.
 ```c++
 auto np bigint::power(123456789ULL, 62125); // 123456789 ^ 62125 
