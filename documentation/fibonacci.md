@@ -11,7 +11,7 @@ This makes it an infinite family of sequences.
 
 ## Function signature
 
-The fibonacci function is defined as:
+The `fibonacci` function is defined as:
 
 ```c++
 template <unsigned int order = 2>
@@ -19,11 +19,11 @@ void fibonacci(std::vector<bigint_t>& result, unsigned int from, unsigned int to
 ```
 
 For algorithmic complexity reasons, it returns consecutive Fibonacci numbers located at indices between `from` and `to`.<br/>
-We note $\text{fibonacci{<}}k\text{{>}}(n)$: $f^k_n$ and $\text{fibonacci}(n) = \text{fibonacci{<}}2\text{{>}}(n)$ simplified as $f_n$. 
+We note $\text{fibonacci{<}}k\text{{>}}(n)$: $f^k_n$; the regular sequence terms $f^2_n$ are simplified as $f_n$. 
 
 ## Naive implementation
 
-The naive implementation of a Fibonacci function, for a single number makes use of the recursive nature of the sequence:
+The naive implementation of a Fibonacci function outputs a single number from the sequence by making use of its recursive nature:
 
 ```c++
 unsigned long long fibonacci(short n)
@@ -44,7 +44,7 @@ Several approaches allow the execution time to be greatly cut, among which we ca
 
 ### Memoization
 
-Caching the successive Fibonacci numbers can cut both branches of the naive algorithm. With a cache, there is no need going all the way back to $f_1$, which the naive approach does $\approx 2^n$ times.
+Caching the successive Fibonacci numbers can cut both branches of the naive algorithm. With a cache, there is no need going all the way back to $f_1$, which the naive approach does $f_n$ times.
 
 ```c++
 #include <vector>
@@ -96,30 +96,31 @@ Finally, it does not allow a program to save its state and resume from there on 
 As we determined above, the memory required to save any significant number of Fibonacci numbers greatly limits how useful the above 2 approaches are. 
 It also makes the implementation of the generalizations to the Fibonacci sequence impossible.
 
-2 algorithms compete to get fibonacci numbers of a higher index in the sequence, and with enough flexibility the calculation can be generalized:
+2 algorithms compete to get Fibonacci numbers of a higher index in the sequence, and with enough flexibility the calculation can be generalized:
 - Iterative algorithm:
 With just 2 variables, it is possible to completely get rid of the recursion from the naive algorithm.<br/>
 With this approach, $f_n$ can be obtained in $\approx n$ steps[^1].
-- Matrix exponantiation: Fibonacci numbers can also be calculated by multiplying square matrices together; the size of the matrix is the same as the order ($`2`$ for the Fibonacci sequence).<br/>
-Thanks to [exponantiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring), that we have already used for the [`power` function](./power.md) and is now applied to matrices, $f_n$ can be obtained in $\approx \log(n)$ steps[^1].<br/>
+- Matrix exponentiation: Fibonacci numbers can also be calculated by multiplying square matrices; the size of the matrix is the same as the order ($`2 \times 2`$ for the Fibonacci sequence).<br/>
+Thanks to [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring), that we have already used for the [`power` function](./power.md) and is now applied to matrices, $f_n$ can be obtained in $\approx \log(n)$ steps[^1].<br/>
 
 [^1]: Not to be mixed with algorithmic complexity, since each "step" has its own complexity.
 
-So, it is hardly a competition if both algorithms have this difference in complexity. Well, not so fast...
-- The downside of the matrix exponantiation method is that it calculates independent values. To have all the values between $f_n$ to $f_m$, it is necessary to restart from 1.<br/>
-It is easy to understand that the calculation of $`n`$ values of something requires at least an $\text{O}(n)$ algorithm. The iterative algorithm is perfectly suited for this.
-- Even if the matrix exponantiation algorithm could be modified to calculate consecutive values with the same algorithmic complexity as the iterative algorithm, it would still be slower.<br/>
+So, it is hardly a competition if both algorithms have this difference in complexity, right? Well, not so fast...
+- The downside of the matrix exponentiation method is that it calculates independent values. To have all the values between $f_n$ to $f_m$, it is necessary to restart from square 1.<br/>
+- Even if the matrix exponentiation algorithm could be modified to calculate consecutive values with the same algorithmic complexity as the iterative algorithm, it would still be slower.<br/>
 Indeed, the iterative algorithm, knowing $f_{n-2}$ and $f_{n-1}$, can output $f_n$ in a single addition. This is faster than anything achievable with matrices.
+
+It is easy to understand that the calculation of $`n`$ values of something requires at least an $\text{O}(n)$ algorithm. For that reason, the iterative algorithm is basically as good as it can get for this.
 
 ### End-to-end calculation
 
-Getting the results consists in linking the matrix exponantiation algorithm to the iterative algorithm;. To get consecutive Fibonacci numbers from index $m$ to index $n$:
+Getting the results consists in linking the matrix exponentiation algorithm to the iterative algorithm. To get consecutive Fibonacci numbers from index $m$ to index $n$:
 
-1. Apply the matrix exponantiation algorithm to get values from index $m$ to $m + k$. This is done by calculating $\mathscr{F}^k_{m+1}$.
+1. Apply the matrix exponentiation algorithm to get values from index $m$ to $m + k$. This is done by calculating $\mathscr{F}^k_{m+1}$.
 2. If $m + k \geq n$, discard the unnecessary values, if any, and stop.<br/>
 Otherwise, apply the iterative algorithm, using the Fibonacci numbers obtained at step 1 to kick it off.
 
-In practice, the matrix exponantiation algorithm is called only if the index of the first Fibonacci number that must be returned is high enough; the threshold is closely related to the size of the fibonacci matrix ($\text{order} \times \text{order}$) and the number of iterations required to get passed the iterative algorithm, it is currently set at $8 \times \text{order}^2$. For smaller values, the benefit-to-cost of the exponantiation is in favor of the iterative function.
+In practice, the matrix exponantiation algorithm is called only if the index of the first Fibonacci number that must be returned is high enough; the threshold is closely related to the size of the fibonacci matrix ($\text{order} \times \text{order}$) and the number of iterations required to get passed the iterative algorithm, it is currently set at $8 \times \text{order}^2$. For smaller values, the benefit-to-cost of the exponentiation is in favor of the iterative function.
 
 ### Iterations
 
@@ -148,11 +149,11 @@ The algorithm has a number of parameters:
 At higher orders of the sequence, the $k$ terms in the sum $f^k_i \leftarrow f^k_{i - k} + f^k_{i - k + 1} + \dotsc + f^k_{i - 1}$ can be optimized:
 
 $$
-\begin{align*}
-\forall i, f^k_i = \sum_{n = 1}^k f^k_{i - n} = & \text{  } \sum_{n = 1}^k f^k_{i - n} + f^k_{i-k-1} - f^k_{i-k-1} \\
+\begin{flalign*}
+\forall i, f^k_i = \sum_{n = 1}^k f^k_{i - n} = & \text{  } \sum_{n = 1}^k f^k_{i - n} + f^k_{i-k-1} - f^k_{i-k-1} && \\
 = & \text{  } f^k_{i-1} +  \sum_{n = 2}^{k +1} f^k_{i - n} - f^k_{i-k-1} \\
 = & \text{  } 2 \times f^k_{i-1} - f^k_{i-k-1} 
-\end{align*}
+\end{flalign*}
 $$
 
 At the cost of knowing $k+1$ consecutive elements of the Fibonacci series of order $k$ (1 more than would otherwise be required), it is possible to calculate all the next elements with only 2 basic operations; starting at $k=4$, this calculation is faster than simply applying the definition formula of the sequence.
@@ -165,6 +166,7 @@ Hopefully, as we are about to see, this is exactly what the matrix exponantiatio
 The principle here is to perform exponantiation by squaring to a $k \times k$ matrix:
 
 $$
+\begin{flalign*}
 \mathscr{F}^2_n = 
 \begin{pmatrix}
 1 & 1 \\
@@ -173,7 +175,8 @@ $$
 \begin{pmatrix}
 f_{n+1} & f_n \\
 f_n & f_{n-1}
-\end{pmatrix}
+\end{pmatrix} &&
+\end{flalign*}
 $$
 
 Again, exponantiation by squaring allows to get the result  faster than $\text{O}(n)$, the downside being we cannot get more than $k+1$ values.
@@ -203,6 +206,7 @@ At order $k$, the matrix used for exponantiation is made of zeroes except for th
 - On the cells directly under the diagonal.
 
 $$
+\begin{flalign*}
 \mathscr{F}^k_n =
 \begin{pmatrix}
 1 & 1 & 1 & \cdots & 1 & 1 \\
@@ -217,7 +221,8 @@ f^k_{n+k-1} & \cdots & f^k_{n+k-2} \\
 f^k_{n+k-2} & \cdots & f^k_{n+k-3} \\
 \vdots & \ddots & \vdots \\
 f^k_n & \cdots & f^k_{n-1}
-\end{pmatrix}
+\end{pmatrix} &&
+\end{flalign*}
 $$
 
 #### Optimizations   of the matrix multiplication
@@ -267,6 +272,7 @@ This means that except for the last row and the last column, every item of $\mat
 Illustration with:
 
 $$
+\begin{flalign*}
 \mathscr{F}^5_{10} =
 \begin{pmatrix}
 464 & 448 & 417 & 356 & 236 \\
@@ -274,10 +280,12 @@ $$
  120 & 116 & \color{blue}108 & 92 & 61 \\
 61 & 59 & 55 & 47 & 31 \\
 31 & 30 & 28 & 24 & 16
-\end{pmatrix}
+\end{pmatrix} &&
+\end{flalign*}
 $$
 
 $$
+\begin{flalign*}
 \mathscr{F}^{10}_{12} =
 \begin{pmatrix}
 2045 & 2043 & 2039 & \color{red}2031 & 2015 & 1983 & 1919 & 1791 & 1535 & \color{red}1023 \\
@@ -290,15 +298,16 @@ $$
 16 & 16 & 16 & 16 & 16 & 16 & 15 & 14 & 12 & 8 \\
 8 & 8 & 8 & 8 & 8 & 8 & 8 & 7 & 6 & 4 \\
 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 3 & 2
-\end{pmatrix}
+\end{pmatrix} &&
+\end{flalign*}
 $$
 
 ```math
-\begin{align*}
-\color{blue}\mathscr{F}_{10}^5[2,2]    & = & 228  & = & 120 + 108   & = \;\; & \color{blue}\mathscr{F}_{10}^5[2,5]     \;\;\;\; & + \;\;\;\; \color{blue}\mathscr{F}_{10}^5[3,3] \\
+\begin{flalign*}
+\color{blue}\mathscr{F}_{10}^5[2,2]    & = & 228  & = & 120 + 108   & = \;\; & \color{blue}\mathscr{F}_{10}^5[2,5]     \;\;\;\; & + \;\;\;\; \color{blue}\mathscr{F}_{10}^5[3,3] && \\
 \color{red}\mathscr{F}_{12}^{10}[1,4] & = & 2031 & = & 1023 + 1008 & = \;\; & \color{red}\mathscr{F}_{12}^{10}[1,10] \;\;\;\; & + \;\;\;\; \color{red}\mathscr{F}_{12}^{10}[2,5] \\
 \color{green}\mathscr{F}_{12}^{10}[3,8] & = & 448  & = & 256 + 192   & = \;\; & \color{green}\mathscr{F}_{12}^{10}[3,10] \;\;\;\; & + \;\;\;\; \color{green}\mathscr{F}_{12}^{10}[4,9]
-\end{align*}
+\end{flalign*}
 ```
 
 
@@ -324,12 +333,12 @@ By exploiting the specific structure of the matrices, the algorithm we obtain is
 
 Different sequences can be generated depending on the first elements in the series. Among the common generalized sequences:
 - The Fibonacci sequence starts with $f_0 = 0, f_1 = 1$.
-- The Lucas sequence starts with $g_0 = 2, g_1 = 1$.
+- The Lucas sequence starts with $l_0 = 2, l_1 = 1$.
 
 Thanks to overriding the starting point of a sequence, it is possible to save the state of a calculation to resume it later. As an example:
-- With $g_1 = f_{100} = 354{,}224{,}848{,}179{,}261{,}915{,}075 \text{ and  } g_2 = f_{101} = 573{,}147{,}844{,}013{,}817{,}084{,}101$
-- The relationship that links the Fibonacci sequence with that generalization is: $\forall n, g_n = f_{n+99}$.<br/>
-  For instance, $f_{199} = g_{100} = 173{,}402{,}521{,}172{,}797{,}813{,}159{,}685{,}037{,}284{,}371{,}942{,}044{,}301$ 
+- With $g_0 = f_{100} = 354{,}224{,}848{,}179{,}261{,}915{,}075 \text{ and  } g_1 = f_{101} = 573{,}147{,}844{,}013{,}817{,}084{,}101$
+- The relationship that links the Fibonacci sequence with that generalization is: $\forall n, g_n = f_{n+100}$.<br/>
+  For instance, $f_{200} = g_{100} = 173{,}402{,}521{,}172{,}797{,}813{,}159{,}685{,}037{,}284{,}371{,}942{,}044{,}301$ 
 
 #### Algorithm
 
@@ -358,8 +367,8 @@ Illustration with $k=4, e_1=4, e_2=8, e_3=1, e_4=3$
 1. Initialization:<br/>
 
 $$
-\begin{align*}
-e_0 = 3 - 1 - 8- 4 = -10 \\
+\begin{flalign*}
+e_0 = 3 - 1 - 8- 4 = -10 &&\\
 \mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & \color{red}? & \color{red}? & 1 \\
@@ -367,55 +376,63 @@ e_0 = 3 - 1 - 8- 4 = -10 \\
 8 & \color{red}? & \color{red}? & 4 \\
 4 & \color{red}? & \color{red}? & -10
 \end{pmatrix}
-\end{align*}
+\end{flalign*}
 $$
 
 2. First loop, on column 3:<br/>
 
 $$
+\begin{flalign*}
 \mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & \color{red}? & 9 & 1 \\
 1 & \color{red}? & 12 & 8 \\
 8 & \color{red}? & -6 & 4 \\
 4 & \color{red}? & \color{red}? & -10
-\end{pmatrix}
+\end{pmatrix} &&
+\end{flalign*}
 $$
 
 3. First loop, on column 2:<br/>
 
 $$
+\begin{flalign*}
 \mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
 8 & \color{red}? & -6 & 4 \\
 4 & \color{red}? & \color{red}? & -10
-\end{pmatrix}
+\end{pmatrix} &&
+\end{flalign*}
 $$
 
 4. Second loop, on column 2:<br/>
 
 $$
+\begin{flalign*}
 \mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
 8 & -7 & -6 & 4 \\
 4 & 4 & \color{red}? & -10
-\end{pmatrix}
+\end{pmatrix} &&
+\end{flalign*}
 $$
 
 5. Second loop, on column 3:<br/>
 
 $$
+\begin{flalign*}
 \mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
 8 & -7 & -6 & 4 \\
 4 & 4 & -11 & -10
-\end{pmatrix}
+\end{pmatrix} &&
+\end{flalign*}
 $$
 
 #### Stop-and-start example
