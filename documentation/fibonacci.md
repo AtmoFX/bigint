@@ -96,7 +96,7 @@ Finally, it does not allow a program to save its state and resume from there on 
 As we determined above, the memory required to save any significant number of Fibonacci numbers greatly limits how useful the above 2 approaches are. 
 It also makes the implementation of the generalizations to the Fibonacci sequence impossible.
 
-2 algorithms compete to achieve get fibonacci numbers of a higher index in the sequence, and with enough flexibility the calculation can be generalized:
+2 algorithms compete to get fibonacci numbers of a higher index in the sequence, and with enough flexibility the calculation can be generalized:
 - Iterative algorithm:
 With just 2 variables, it is possible to completely get rid of the recursion from the naive algorithm.<br/>
 With this approach, $f_n$ can be obtained in $\approx n$ steps[^1].
