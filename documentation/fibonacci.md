@@ -270,8 +270,8 @@ $$
 \mathscr{F}^5_{10} =
 \begin{pmatrix}
 464 & 448 & 417 & 356 & 236 \\
-236 & 228 & 212 & 181 & 120 \\
- 120 & 116 & 108 & 92 & 61 \\
+236 & \color{blue}228 & 212 & 181 & \color{blue}120 \\
+ 120 & 116 & \color{blue}108 & 92 & 61 \\
 61 & 59 & 55 & 47 & 31 \\
 31 & 30 & 28 & 24 & 16
 \end{pmatrix}
@@ -280,10 +280,10 @@ $$
 $$
 \mathscr{F}^{10}_{12} =
 \begin{pmatrix}
-2045 & 2043 & 2039 & 2031 & 2015 & 1983 & 1919 & 1791 & 1535 & 1023 \\
-1023 & 1022 & 1020 & 1016 & 1008 & 992 & 960 & 896 & 768 & 512 \\
-512 & 511 & 510 & 508 & 504 & 496 & 480 & 448 & 384 & 256 \\
-256 & 256 & 255 & 254 & 252 & 248 & 240 & 224 & 192 & 128 \\
+2045 & 2043 & 2039 & \color{red}2031 & 2015 & 1983 & 1919 & 1791 & 1535 & \color{red}1023 \\
+1023 & 1022 & 1020 & 1016 & \color{red}1008 & 992 & 960 & 896 & 768 & 512 \\
+512 & 511 & 510 & 508 & 504 & 496 & 480 & \color{green}448 & 384 & \color{green}256 \\
+256 & 256 & 255 & 254 & 252 & 248 & 240 & 224 & \color{green}192 & 128 \\
 128 & 128 & 128 & 127 & 126 & 124 & 120 & 112 & 96 & 64 \\
 64 & 64 & 64 & 64 & 63 & 62 & 60 & 56 & 48 & 32 \\
 32 & 32 & 32 & 32 & 32 & 31 & 30 & 28 & 24 & 16 \\
@@ -295,9 +295,9 @@ $$
 
 ```math
 \begin{align*}
-\mathscr{F}_{10}^5[2,2]    & = & 228  & = & 120 + 108   & = \;\; & \mathscr{F}_{10}^5[2,5]     \;\;\;\; & + \;\;\;\; \mathscr{F}_{10}^5[3,3] \\
-\mathscr{F}_{12}^{10}[1,4] & = & 2031 & = & 1023 + 1008 & = \;\; & \mathscr{F}_{12}^{10}[1,10] \;\;\;\; & + \;\;\;\; \mathscr{F}_{12}^{10}[2,5] \\
-\mathscr{F}_{12}^{10}[3,8] & = & 448  & = & 256 + 192   & = \;\; & \mathscr{F}_{12}^{10}[3,10] \;\;\;\; & + \;\;\;\; \mathscr{F}_{12}^{10}[4,9]
+\color{blue}\mathscr{F}_{10}^5[2,2]    & = & 228  & = & 120 + 108   & = \;\; & \color{blue}\mathscr{F}_{10}^5[2,5]     \;\;\;\; & + \;\;\;\; \color{blue}\mathscr{F}_{10}^5[3,3] \\
+\color{red}\mathscr{F}_{12}^{10}[1,4] & = & 2031 & = & 1023 + 1008 & = \;\; & \color{red}\mathscr{F}_{12}^{10}[1,10] \;\;\;\; & + \;\;\;\; \color{red}\mathscr{F}_{12}^{10}[2,5] \\
+\color{green}\mathscr{F}_{12}^{10}[3,8] & = & 448  & = & 256 + 192   & = \;\; & \color{green}\mathscr{F}_{12}^{10}[3,10] \;\;\;\; & + \;\;\;\; \color{green}\mathscr{F}_{12}^{10}[4,9]
 \end{align*}
 ```
 
@@ -450,4 +450,4 @@ for (unsigned int i = minIndex + reportEvery; i <= maxIndex; i += reportEvery) {
 }
 ```
 
-Note that in the above code, while we could use `fiboResult[0]` and `fiboResult[1]` to fill the `restartFrom` array, that would be very slightly sub-optimal: as the matrix exponantiation algorithm generates 1 more value than the order (i.e. 3 values), we may as well use them all rather than discarding it.
+Note that in the above code, while we could use `fiboResult[0]` and `fiboResult[1]` to fill the `restartFrom` array, that would be very slightly sub-optimal: as the matrix exponantiation algorithm generates 1 more value than the order (i.e. 3 values), we may as well use them all rather than discarding one.
