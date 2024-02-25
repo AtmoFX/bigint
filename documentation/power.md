@@ -8,11 +8,11 @@ The power function is defined as:
 bigint_t power(const bigint_t& n, size_t p);
 ```
 
-This calculates $n^p$, with $p$ being a positive integer.
+This calculates $n^p = \overbrace{n \times n \times n \times \dotsc \times n}^{p\text{ times}}$.
 
-## Native implementation
+## Naive implementation
 
-The native implementation for power calculation is:
+The naive implementation for power is:
 
 ```c++
 bigint::bigint_t power(const bigint::bigint_t& n, size_t p)
@@ -52,7 +52,7 @@ $2^2$ does not enter into the decomposition of 19; this is not going to be used 
 5. For $i = 3$, we calculate $3^{2^3} = 81 \times 81 = 6{,}561$.<br/>
 Same as above, this is only useful to get to the next step of the calculation.
 6. For $i = 4$, we calculate $3^{2^4} = 6{,}561 \times 6{,}561 = 43{,}046{,}721$.
-7. We have now covered all the digits of $19$.<br/>
+7. We have now covered all the binary digits of $19$.<br/>
 We can calculate $3^{19} = 3 \times 9 \times 43{,}046{,}721 = 1{,}162{,}261{,}467$.
 
 The algorithm uses $\lfloor log_2(p) \rfloor$ squaring operations and at most $\lfloor log_2(p) \rfloor$ multiplications for the final product (it depends how many binary digits of $p$ are $1$).In the above case, the result was obtained with 6 multiplications, instead of 18 for the naive case.<br/>
