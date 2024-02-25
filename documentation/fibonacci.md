@@ -34,9 +34,12 @@ unsigned long long fibonacci(short n)
 }
 ```
 
-This is of course highly inefficient: because each call creates 2 recursive branches, the complexity is $\text{O}(2^n)$. With this approach:
+This is of course highly inefficient: because each call creates 2 recursive branches, the complexity if exponential.<br/>
+More precisely, as $f_n$ branches reach $f_1$, by definition of the sequence, the complexity is $\text{Θ}({φ}^n) = \text{O}(1.618034^n) = \text{O}(2^n)$.
+
+With this approach:
 - $f_{40}$ takes about 1sec. to calculate on modern PC (only the order of magnitude matters, not the exact duration).
-- $f_{93}$, which is the largest value that fits in the `unsigned long long` type, is impossible to compute in practice.
+- $f_{93}$, which is the largest value that fits in the `unsigned long long` type, should be expected to take ≈3800 years.
 
 ## Alternative implementations
 
@@ -105,12 +108,12 @@ Thanks to [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiat
 
 [^1]: Not to be mixed with algorithmic complexity, since each "step" has its own complexity.
 
-So, it is hardly a competition if both algorithms have this difference in complexity, right? Well, not so fast...
+With such a complexity difference betwen the algorithms, it is hardly a competition, right? Well, not so fast...
 - The downside of the matrix exponentiation method is that it calculates independent values. To have all the values between $f_n$ to $f_m$, it is necessary to restart from square 1.<br/>
 - Even if the matrix exponentiation algorithm could be modified to calculate consecutive values with the same algorithmic complexity as the iterative algorithm, it would still be slower.<br/>
-Indeed, the iterative algorithm, knowing $f_{n-2}$ and $f_{n-1}$, can output $f_n$ in a single addition. This is faster than anything achievable with matrices.
+Indeed, the iterative algorithm, knowing $f_{k-1}$ and $f_k$, can output $f_{k+1}$ in a single addition. This is faster than anything achievable with matrices.
 
-It is easy to understand that the calculation of $`n`$ values of something requires at least an $\text{O}(n)$ algorithm. For that reason, the iterative algorithm is basically as good as it can get for this.
+Calculating $`n`$ values of anything is bound to require (at least) $\text{O}(n)$ operations. For that reason, the iterative algorithm is basically as good as it can get for this.
 
 ### End-to-end calculation
 
@@ -134,9 +137,20 @@ The algorithm has a number of parameters:
 - The order $k$ of the sequence.
 - The first $f^k_1, f^k_2, \dotsc, f^k_k$ numbers of the sequence.
 
+Note that by default, in any Fibonacci sequence:
+
+$$
+\begin{flalign*}
+\begin{cases}
+\forall i < k-1, f^k_i = 0 \\
+f^k_{k-1} = f^k_k = 1
+\end{cases} & &
+\end{flalign*}
+$$
+
 #### Algorithm
 
-1. Initialize $f^k_0 = 0$ and $f^k_1, f^k_2, \dotsc, f^k_k$ from the provided initial values.
+1. Retrieve $f^k_1, f^k_2, \dotsc, f^k_k$ from the provided or the default initial values.
 2. Add all $f^k_i / \text{from} \leq i \leq k$ to the output, if any.
 3. Let $i = k + 1$.
 4. Do $f^k_i \leftarrow f^k_{i - k} + f^k_{i - k + 1} + \dotsc + f^k_{i - 1}$.
@@ -181,29 +195,13 @@ $$
 
 Again, exponantiation by squaring allows to get the result  faster than $\text{O}(n)$, the downside being we cannot get more than $k+1$ values.
 
-#### Inputs
-
-The algorithm's inputs are:
-- The target index $n$
-- The order $k$ of the sequence.
-- The first $f^k_1, f^k_2, \dotsc, f^k_k$ numbers of the sequence.
-
-#### Algorithm
-
-1. Initialize variables $F = R = \mathscr{F}^k_1$.
-2. If $n \bmod 2 = 1$, do $R \leftarrow R \times F$.
-3. Do $M \leftarrow M^2$.<br/>This is the step that gives the name, exponantiation by squaring, to the algorithm.
-4. Do $n \leftarrow \lfloor n/2 \rfloor$.
-5. If $n > 1$ go back to step 2.
-6. Do $R \leftarrow R \times F$.
-7. Return the Fibonacci numbers from the matrix.<br/>
-The bottom-right value ($f^k_n$); the values in the left column, from bottom to top, are $f^k_{n+1}, f^k_{n+2}, \dotsc, f^k_{n+k}$.<br/>This makes it $k+1$ values, exactly as required by the iterative function.
-
 #### Matrices for higher order sequences
 
 At order $k$, the matrix used for exponantiation is made of zeroes except for the ones placed:
 - On the first row.
 - On the cells directly under the diagonal.
+
+Just like what happens at order 2, when the matrix is put to a power $n$, Fibonacci numbers appear:
 
 $$
 \begin{flalign*}
@@ -225,7 +223,24 @@ f^k_n & \cdots & f^k_{n-1}
 \end{flalign*}
 $$
 
-#### Optimizations   of the matrix multiplication
+The Fibonacci numbers appear only in the leftmost and the rightmost columns.<br/>
+The values in the middle are not ones we can return but it does not mean they are unimportant; we will see later what they are.
+
+#### Inputs
+
+The algorithm's inputs are:
+- The target index $n$
+- The order $k$ of the sequence.
+- The first $f^k_1, f^k_2, \dotsc, f^k_k$ numbers of the sequence.
+
+#### Algorithm
+
+1. Calculate $\mathscr{F}^k_{\text{from} + k + 1} = \Big(\mathscr{F}^k_1 \Big)^{\text{from} + k +1}$ using the same exponentiation by squaring algorithm as for the [power function](./power.md).
+2. Return the Fibonacci numbers from the matrix.<br/>
+The bottom-right value is ($f^k_\text{from}$); the values in the left column, from bottom to top, are $f^k_{\text{from}+1}, f^k_{\text{from}+2}, \dotsc, f^k_{\text{from}+k}$.<br/>
+This makes it $k+1$ values, exactly as required by the iterative function.
+
+#### Optimizations of the matrix multiplication
 
 When multiplying two $k \times k$ matrices, each item of the result is obtained by doing $k$ products and $k-1$ additions to sum them together. 
 Setting aside the complexity of the multiplication operation, this makes it a $\text{O}(k^3)$ operation[^2]. Hopefully, the matrices used in this algorihtm are not any matrices: as they are used to generate a sequence following a pattern, they have a pattern of their own that is the direct consequence of how $\mathscr{F}^k_1$ is structured.
@@ -237,7 +252,7 @@ This pattern allows to remove a substantial number of multiplications:
 1. $k - 1$ values appear twice:<br/>
 Values from the first column, row $r \geq 2$ are fibonacci numbers that are repeated on the last column of the matrix, at row $r - 1$.
 There is no need, during exponantiation, to do all the multiplications more than once per number.<br/>
-Additionally, there is no need to reserve memory to store these numbers twice. The matrices will be represented as a C++ array of size $k^2 - (k - 1)$ embedded into a class whose responsibility to is to turn the 1D-array into a 2D-matrix:<br/>
+Additionally, there is no need to reserve memory to store these numbers twice. The matrices will be represented as a C++ array of size $k^2 - (k - 1)$ embedded into a helper class:<br/>
 Below is but a fraction of the definition of that class, to illustrate how the matrix-to-array index conversion (`M[r][c] -> A[i]`).
 ```c++
 template<typename T, unsigned int order>
@@ -291,8 +306,8 @@ $$
 2045 & 2043 & 2039 & \color{red}2031 & 2015 & 1983 & 1919 & 1791 & 1535 & \color{red}1023 \\
 1023 & 1022 & 1020 & 1016 & \color{red}1008 & 992 & 960 & 896 & 768 & 512 \\
 512 & 511 & 510 & 508 & 504 & 496 & 480 & \color{green}448 & 384 & \color{green}256 \\
-256 & 256 & 255 & 254 & 252 & 248 & 240 & 224 & \color{green}192 & 128 \\
-128 & 128 & 128 & 127 & 126 & 124 & 120 & 112 & 96 & 64 \\
+256 & 256 & \color{orange}255 & 254 & 252 & 248 & 240 & 224 & \color{green}192 & \color{orange}128 \\
+128 & 128 & 128 & \color{orange}127 & 126 & 124 & 120 & 112 & 96 & 64 \\
 64 & 64 & 64 & 64 & 63 & 62 & 60 & 56 & 48 & 32 \\
 32 & 32 & 32 & 32 & 32 & 31 & 30 & 28 & 24 & 16 \\
 16 & 16 & 16 & 16 & 16 & 16 & 15 & 14 & 12 & 8 \\
@@ -306,7 +321,8 @@ $$
 \begin{flalign*}
 \color{blue}\mathscr{F}_{10}^5[2,2]    & = & 228  & = & 120 + 108   & = \;\; & \color{blue}\mathscr{F}_{10}^5[2,5]     \;\;\;\; & + \;\;\;\; \color{blue}\mathscr{F}_{10}^5[3,3] && \\
 \color{red}\mathscr{F}_{12}^{10}[1,4] & = & 2031 & = & 1023 + 1008 & = \;\; & \color{red}\mathscr{F}_{12}^{10}[1,10] \;\;\;\; & + \;\;\;\; \color{red}\mathscr{F}_{12}^{10}[2,5] \\
-\color{green}\mathscr{F}_{12}^{10}[3,8] & = & 448  & = & 256 + 192   & = \;\; & \color{green}\mathscr{F}_{12}^{10}[3,10] \;\;\;\; & + \;\;\;\; \color{green}\mathscr{F}_{12}^{10}[4,9]
+\color{green}\mathscr{F}_{12}^{10}[3,8] & = & 448  & = & 256 + 192   & = \;\; & \color{green}\mathscr{F}_{12}^{10}[3,10] \;\;\;\; & + \;\;\;\; \color{green}\mathscr{F}_{12}^{10}[4,9] \\
+\color{orange}\mathscr{F}_{12}^{10}[4,3] & = & 127  & = & 128 + 127   & = \;\; & \color{orange}\mathscr{F}_{12}^{10}[4,10] \;\;\;\; & + \;\;\;\; \color{orange}\mathscr{F}_{12}^{10}[5,4]
 \end{flalign*}
 ```
 
@@ -322,7 +338,7 @@ If $c>1$ do $c \leftarrow c - 1$.
 Otherwise, do $r \leftarrow r-1, c \leftarrow k-1$
 5. Go back to step 3.
 
-The result is that for a $k \times k$ matrix multiplication, the bottom $k$ elements each require $k$ multiplications to be obtained (and $k-1$) additions). The $(k-1)^2$ remaining elements need 1 addition each to be obtained. The resulting computational complexity therefore is $\text{O}(k^2)$, or $\text{O}(\text{M}(n) \times k^2)$ when including the complexity of multiplications; this is true for all $k$, i.e. not simply as an asymptotic behavior (when $k$ is large enough).<br/>
+The result is that for a $k \times k$ matrix multiplication, the bottom $k$ elements each require $k$ multiplications to be obtained (and $k-1$ additions). The $(k-1)^2$ remaining elements need 1 addition each to be obtained. The resulting computational complexity therefore is $\text{O}(k^2)$, or $\text{O}(\text{M}(n) \times k^2)$ when including the complexity of multiplications; this is true for all $k$, i.e. not simply as an asymptotic behavior (when $k$ is large enough).<br/>
 By exploiting the specific structure of the matrices, the algorithm we obtain is faster than any known general-case matrix multiplication algorithm and at least as fast as the theoretical limit[^3].
 
 [^3]: Whether matrix multiplication can be done with O(n<sup>2</sup>) complexity is an open question in mathematics.
@@ -335,10 +351,11 @@ Different sequences can be generated depending on the first elements in the seri
 - The Fibonacci sequence starts with $f_0 = 0, f_1 = 1$.
 - The Lucas sequence starts with $l_0 = 2, l_1 = 1$.
 
-Thanks to overriding the starting point of a sequence, it is possible to save the state of a calculation to resume it later. As an example:
-- With $g_0 = f_{100} = 354{,}224{,}848{,}179{,}261{,}915{,}075 \text{ and  } g_1 = f_{101} = 573{,}147{,}844{,}013{,}817{,}084{,}101$
-- The relationship that links the Fibonacci sequence with that generalization is: $\forall n, g_n = f_{n+100}$.<br/>
-  For instance, $f_{200} = g_{100} = 173{,}402{,}521{,}172{,}797{,}813{,}159{,}685{,}037{,}284{,}371{,}942{,}044{,}301$ 
+Thanks to overriding the starting point of a sequence, it is possible to save the state of a calculation to resume it later. This is akin to memoization except only $k$ consecutive values have to be saved rather than all values from index 1.<br/>
+As an example:
+- With $g_1 = f_{100} = 354{,}224{,}848{,}179{,}261{,}915{,}075$ and $g_2 = f_{101} = 573{,}147{,}844{,}013{,}817{,}084{,}101$
+- The relationship that links the Fibonacci sequence with that generalization is: $\forall n, g_n = f_{n+99}$.<br/>
+  For instance, $f_{199} = g_{100} = 173{,}402{,}521{,}172{,}797{,}813{,}159{,}685{,}037{,}284{,}371{,}942{,}044{,}301$ 
 
 #### Algorithm
 
@@ -437,7 +454,7 @@ $$
 
 #### Stop-and-start example
 
-The code below prints every 100 Fibonacci numbers between indices 100k and 200k. It calculates all the values before anything is printed, so it needs about 1.25GB to store them all in memory.
+The code below prints every 100th Fibonacci number between indices 100k and 200k. It calculates all the values before anything is printed, so it needs about 1.25GB to store them all in memory.
 
 ```c++
 constexpr unsigned int minIndex = 100000, maxIndex = 200000, reportEvery = 100;
@@ -448,9 +465,7 @@ for (unsigned int i = 0; i <= maxIndex - minIndex; i += reportEvery)
     std::cout << "Fibonacci(" << minIndex + i << "):\n" << fiboResults[i].toString() << '\n';
 ```
 
-An alternative to the above approach is to force the starting point to actually skip the calculation of the unnecessary numbers. The code is more verbose but requires less than 2MB of memory, as never more than 3 Fibonacci numbers  are in memory (+ everything the `fibonacci` function needs to work).<br/>
-
-
+An alternative to the above approach is to force the starting point to actually skip the calculation of the unnecessary numbers. The code is more verbose but requires less than 2MB of memory, as never more than 3 Fibonacci numbers  are in memory (+ everything the `fibonacci` function needs to work).
 
 ```c++
 constexpr unsigned int minIndex = 100000, maxIndex = 200000, reportEvery = 100;
