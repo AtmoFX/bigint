@@ -61,7 +61,7 @@ In practice, these 2 operations are done by doing $\big(\text{result}_{i+j} + a_
 5. At the end of the outer loop, a carry may remain. Do $p_{2l-1} \leftarrow c$.
 6. Trim $p$ if the carry was 0.
 
-[^1]: As determined in the [basics](./basics#), a 64-bit integer is enough to store the result of any 32-bit combination of the form: a x b + c + d.
+[^1]: As determined in the [basics](./basics.md), a 64-bit integer is enough to store the result of any 32-bit combination of the form: a x b + c + d.
 
 ## Karatsuba algorithm
 
