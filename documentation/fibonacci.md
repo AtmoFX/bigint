@@ -1,6 +1,19 @@
 # Fibonacci sequence
 
-The Fibonacci sequence is a well-known sequence of integers in which each number is the sum of the two preceding ones.
+The Fibonacci sequence is a well-known sequence of integers, defined as:
+
+$$
+\begin{flalign*}
+f_n = \begin{cases}
+0 & \text{ if } n = 0 \\
+1 & \text{ if } n = 1 \\
+f_{n-1} + f_{n-2} & \text{ if } n \geq 2
+\end{cases} &&
+\end{flalign*}
+$$
+
+
+[Applications](https://en.wikipedia.org/wiki/Fibonacci_sequence#Applications) of the Fibonacci sequence exist in mathematics, computer science, biology, etc.
 
 This library provides generalizations of the Fibonacci sequence, in the form of:
 - Sequences of higher order, i.e. in which each number is the sum of the $`k`$, instead of two, preceding ones.<br/>
@@ -35,19 +48,20 @@ unsigned long long fibonacci(short n)
 ```
 
 This is of course highly inefficient: because each call creates 2 recursive branches, the complexity if exponential.<br/>
-More precisely, as $f_n$ branches reach $f_1$, by definition of the sequence, the complexity is $\text{Θ}({φ}^n) = \text{O}(1.618034^n) = \text{O}(2^n)$.
+More precisely, as $f_n$ branches reach $f_1$, by definition of the sequence, and since $\lim\limits_{n \rightarrow \infty}(f_n / f_{n-1}) = \large \text{φ}$, the complexity is $\text{Θ}(\large \text{φ} \normalsize ^n) = \text{O}(1.618034^n) = \text{O}(2^n)$.
 
 With this approach:
-- $f_{40}$ takes about 1sec. to calculate on modern PC (only the order of magnitude matters, not the exact duration).
-- $f_{93}$, which is the largest value that fits in the `unsigned long long` type, should be expected to take ≈3800 years.
+- $f_{40}$ takes about 1s. to calculate on modern PC (only the order of magnitude matters, not the exact duration).
+- $f_{93}$, the largest value that fits in the `unsigned long long` type, should be expected to compute during 1,000 to 4,000 **years**.
 
 ## Alternative implementations
 
 Several approaches allow the execution time to be greatly cut, among which we can list the following.
 
-### Memoization
+### Dynamic programming / memoization
 
-Caching the successive Fibonacci numbers can cut both branches of the naive algorithm. With a cache, there is no need going all the way back to $f_1$, which the naive approach does $f_n$ times.
+Caching the successive Fibonacci numbers can cut both branches of the naive algorithm.<br/>
+With a cache, there is no need going all the way back to $f_1$ more than once.
 
 ```c++
 #include <vector>
@@ -109,11 +123,9 @@ Thanks to [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiat
 [^1]: Not to be mixed with algorithmic complexity, since each "step" has its own complexity.
 
 With such a complexity difference betwen the algorithms, it is hardly a competition, right? Well, not so fast...
-- The downside of the matrix exponentiation method is that it calculates independent values. To have all the values between $f_n$ to $f_m$, it is necessary to restart from square 1.<br/>
+- The downside of the matrix exponentiation method is that it calculates independent values. To have all the values from $f_m$ to $f_n$, it is necessary to restart from square 1.
 - Even if the matrix exponentiation algorithm could be modified to calculate consecutive values with the same algorithmic complexity as the iterative algorithm, it would still be slower.<br/>
-Indeed, the iterative algorithm, knowing $f_{k-1}$ and $f_k$, can output $f_{k+1}$ in a single addition. This is faster than anything achievable with matrices.
-
-Calculating $`n`$ values of anything is bound to require (at least) $\text{O}(n)$ operations. For that reason, the iterative algorithm is basically as good as it can get for this.
+Indeed, calculating $`n`$ values of anything is bound to require (at least) $\text{O}(n)$ operations, and the iterative algorithm, knowing 2 consecutive Fibonacci numbers, can output the successive next ones in a single addition for each.<br/>This is faster than anything achievable with matrices and basically as good as it can get.
 
 ### End-to-end calculation
 
@@ -137,7 +149,7 @@ The algorithm has a number of parameters:
 - The order $k$ of the sequence.
 - The first $f^k_1, f^k_2, \dotsc, f^k_k$ numbers of the sequence.
 
-Note that by default, in any Fibonacci sequence:
+Note that by default, in any sequence or order $k$:
 
 $$
 \begin{flalign*}
@@ -177,7 +189,7 @@ Hopefully, as we are about to see, this is exactly what the matrix exponantiatio
 
 ### Matrix exponantiation
 
-The principle here is to perform exponantiation by squaring to a $k \times k$ matrix:
+The principle here is to perform exponantiation by squaring to a $2 \times 2$ matrix:
 
 $$
 \begin{flalign*}
@@ -197,7 +209,7 @@ Again, exponantiation by squaring allows to get the result  faster than $\text{O
 
 #### Matrices for higher order sequences
 
-At order $k$, the matrix used for exponantiation is made of zeroes except for the ones placed:
+At order $k$, the matrix used for exponantiation is of size $k \times k$, and filled with zeroes except for ones placed:
 - On the first row.
 - On the cells directly under the diagonal.
 
@@ -235,9 +247,10 @@ The algorithm's inputs are:
 
 #### Algorithm
 
-1. Calculate $\mathscr{F}^k_{\text{from} + k + 1} = \Big(\mathscr{F}^k_1 \Big)^{\text{from} + k +1}$ using the same exponentiation by squaring algorithm as for the [power function](./power.md).
-2. Return the Fibonacci numbers from the matrix.<br/>
-The bottom-right value is ($f^k_\text{from}$); the values in the left column, from bottom to top, are $f^k_{\text{from}+1}, f^k_{\text{from}+2}, \dotsc, f^k_{\text{from}+k}$.<br/>
+1. Calculate $\mathscr{F}^k_{\text{from} + 1} = \Big(\mathscr{F}^k_1 \Big)^{\text{from} + 1}$ using the same exponentiation by squaring algorithm as for the [power function](./power.md).
+2. Extract the Fibonacci numbers in the bottom-right cell and from the leftmost column of the matrix.<br/>
+The bottom-right value is ($f^k_\text{from}$); the values in the left column, from bottom to top, are $f^k_{\text{from}+1}, f^k_{\text{from}+2}, \dotsc, f^k_{\text{from}+k}$.
+
 This makes it $k+1$ values, exactly as required by the iterative function.
 
 #### Optimizations of the matrix multiplication
@@ -281,7 +294,7 @@ $$
 
 
 2. The other optimization comes from the fact that:<br/>
-$\forall k,n, \forall r,c \lt k, \mathscr{F}^k_n[r,c] = \mathscr{F}^k_n[r,k] + \mathscr{F}^k_n[r+1,c +1]$<br/>
+$\forall k,n, \forall r,c \lt k, \mathscr{F}^k_n(r,c) = \mathscr{F}^k_n(r,k) + \mathscr{F}^k_n(r+1,c +1)$<br/>
 This means that except for the last row and the last column, every item of $\mathscr{F}^k_n$ can be calculated with a single addition, which is orders of magnitude faster than processing $k$ multiplications (+ $k-1$ additions).
 
 Illustration with:
@@ -319,10 +332,10 @@ $$
 
 ```math
 \begin{flalign*}
-\color{blue}\mathscr{F}_{10}^5[2,2]    & = & 228  & = & 120 + 108   & = \;\; & \color{blue}\mathscr{F}_{10}^5[2,5]     \;\;\;\; & + \;\;\;\; \color{blue}\mathscr{F}_{10}^5[3,3] && \\
-\color{red}\mathscr{F}_{12}^{10}[1,4] & = & 2031 & = & 1023 + 1008 & = \;\; & \color{red}\mathscr{F}_{12}^{10}[1,10] \;\;\;\; & + \;\;\;\; \color{red}\mathscr{F}_{12}^{10}[2,5] \\
-\color{green}\mathscr{F}_{12}^{10}[3,8] & = & 448  & = & 256 + 192   & = \;\; & \color{green}\mathscr{F}_{12}^{10}[3,10] \;\;\;\; & + \;\;\;\; \color{green}\mathscr{F}_{12}^{10}[4,9] \\
-\color{orange}\mathscr{F}_{12}^{10}[4,3] & = & 127  & = & 128 + 127   & = \;\; & \color{orange}\mathscr{F}_{12}^{10}[4,10] \;\;\;\; & + \;\;\;\; \color{orange}\mathscr{F}_{12}^{10}[5,4]
+\color{blue}\mathscr{F}_{10}^5(2,2)    & = & 228  & = & 120 + 108   & = \;\; & \color{blue}\mathscr{F}_{10}^5(2,5)     \;\;\;\; & + \;\;\;\; \color{blue}\mathscr{F}_{10}^5(3,3) && \\
+\color{red}\mathscr{F}_{12}^{10}(1,4) & = & 2031 & = & 1023 + 1008 & = \;\; & \color{red}\mathscr{F}_{12}^{10}(1,10) \;\;\;\; & + \;\;\;\; \color{red}\mathscr{F}_{12}^{10}(2,5) \\
+\color{green}\mathscr{F}_{12}^{10}(3,8) & = & 448  & = & 256 + 192   & = \;\; & \color{green}\mathscr{F}_{12}^{10}(3,10) \;\;\;\; & + \;\;\;\; \color{green}\mathscr{F}_{12}^{10}(4,9) \\
+\color{orange}\mathscr{F}_{12}^{10}(4,3) & = & 127  & = & 128 + 127   & = \;\; & \color{orange}\mathscr{F}_{12}^{10}(4,10) \;\;\;\; & + \;\;\;\; \color{orange}\mathscr{F}_{12}^{10}(5,4)
 \end{flalign*}
 ```
 
@@ -330,9 +343,9 @@ $$
 The combination of the above 2 rules allows to perform the multiplication by working our way up: 
 
 1. Calculate the bottom row using normal matrix multiplication.<br/>
-As per point 1. above, $\mathscr{F}^k_n[k, 1] = \mathscr{F}^k_n[k-1, k]$.
+As per point 1. above, $\mathscr{F}^k_n(k, 1) = \mathscr{F}^k_n(k-1, k)$.
 2. Let variable $r = k-1, c=k-1$.
-3. Do  $\mathscr{F}^k_n[r, c] = \mathscr{F}^k_n[r, k]+\mathscr{F}^k_n[r+1, c+1]$.
+3. Do  $\mathscr{F}^k_n(r, c) = \mathscr{F}^k_n(r, k)+\mathscr{F}^k_n(r+1, c+1)$.
 4. If $r=c=1$, stop.<br/>
 If $c>1$ do $c \leftarrow c - 1$.
 Otherwise, do $r \leftarrow r-1, c \leftarrow k-1$
@@ -363,16 +376,16 @@ When calculating sequences with a different starting point, the iterative algori
 - For the iterative algorithm, the function simply has to substitute the first elements defined by default by those passed to it.
 - For the matrix exponantiation algorithm, a matrix of $k \times k$ elements needs to be defined from the $k$ input parameters.
 Interestingly, the same properties used to speed up the matrix multiplication can also be used to reconstruct the right matrix $\mathscr{M_1^k}$:
-1. For every row of the matrix, do: $`\mathscr{M}_1^k[r,1] = e_{k-r+1}`$.<br/>
+1. For every row of the matrix, do: $`\mathscr{M}_1^k(r,1) = e_{k-r+1}`$.<br/>
 This operation automatically fills all but the last element of the last column of $\mathscr{M}_1^k$.
-2. Do $\mathscr{M}_1^k[k,k] = e_0 = e_k - (e_1 + e_2+\dotsc+e{k-1})$
+2. Do $\mathscr{M}_1^k(k,k) = e_0 = e_k - (e_1 + e_2+\dotsc+e{k-1})$
 3. Initialize variables $r = 1, c= k-1$.
-4. Do $\mathscr{M}_1^k[r,c] \leftarrow \mathscr{M}_1^k[r,k] + \mathscr{M}_1^k[r+1,c+1]$
+4. Do $\mathscr{M}_1^k(r,c) \leftarrow \mathscr{M}_1^k(r,k) + \mathscr{M}_1^k(r+1,c+1)$
 5. If $r = c = 2$, go to step 6.<br/>
 If $r \leq c$, do $r \leftarrow r + 1$.<br/>
 Otherwise, do $r \leftarrow 1, c \leftarrow c-1$.
 6. Do $r \leftarrow 3, c \leftarrow 2$.
-7. Do $\mathscr{M}_1^k[r,c] \leftarrow \mathscr{M}_1^k[r-1,c-1] - \mathscr{M}_1^k[r,k]$.
+7. Do $\mathscr{M}_1^k(r,c) \leftarrow \mathscr{M}_1^k(r-1,c-1) - \mathscr{M}_1^k(r,k)$.
 8. If $r=k \text{ and } c = k-2$, stop.<br/>
 If $r < k$, do $r \leftarrow r + 1$.
 Otherwise, do $c \leftarrow c + 1, r \leftarrow c+1$.
