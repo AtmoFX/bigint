@@ -61,7 +61,7 @@ In practice, these 2 operations are done by doing $\big(\text{result}_{i+j} + a_
 5. At the end of the outer loop, a carry may remain. Do $p_{2l-1} \leftarrow c$.
 6. Trim $p$ if the carry was 0.
 
-[^1:] As determined in the [basics](./basics#), a 64-bit integer is enough to store the result of any 32-bit combination of the form: $a \times b + c + d$.
+[^1]: As determined in the [basics](./basics#), a 64-bit integer is enough to store the result of any 32-bit combination of the form: $a \times b + c + d$.
 
 ## Karatsuba algorithm
 
@@ -112,7 +112,7 @@ This allows to obtain the subparts of $a$, $b$ and $p$ as:
     - $\alpha_0$ and $\alpha_1$,
     - $\beta_0$ and $\beta_1$,
     - $\psi_0$, $\psi_1$ and $\psi_2$.<br/>
-    Note that $\psi_0$ and $\psi_2$ do not overlap in $p$. However, $\psi_1$ does overlap with the other two.
+    Note that $\psi_0$ and $\psi_2$ do not overlap in $p$. However, $\psi_1$ does overlap with the other two in memory.
 3. Do $\psi_0 \leftarrow \alpha_0 \times \beta_0$, by a recursive call to the multiplication algorithm.
 4. Do $\psi_2 \leftarrow \alpha_1 \times \beta_1$ the same way.
 5. Initialiée a variable $p_\text{mid}$, of size $l$.
@@ -172,13 +172,15 @@ The chosen points are 0 and numbers in the form of $\pm 2^i, i \geq 0$ since the
 For Toom-3, we need 5 points, that we actually calculate:
 
 $$
+\begin{flalign*}
 \begin{cases}
 P(\text{-}2) & = & A(\text{-}2) & \times & B(\text{-}2) & = & (4\ \alpha_2 - 2\ \alpha_1 + \alpha_0) & \times & (4\ \beta_2 - 2\ \beta_1 + \beta_0) \\
 P(\text{-}1) & = & A(\text{-}1) & \times & B(\text{-}1)  & = & (\alpha_2 - \alpha_1 + \alpha_0) & \times & (\beta_2 - \beta_1 + \beta_0)\\
 P(0) & = & A(0) & \times & B(0) & = & \alpha_0 & \times & \beta_0 \\
 P(1) & = & A(1) & \times & B(1) & = & (\alpha_2 + \alpha_1 + \alpha_0) & \times & (\beta_2 + \beta_1 + \beta_0) \\
 P(2) & = & A(2) & \times & B(2) & = & (4\ \alpha_2 + 2\ \alpha_1 + \alpha_0) & \times & (4\ \beta_2 + 2\ \beta_1 + \beta_0)
-\end{cases}
+\end{cases} &&
+\end{flalign*}
 $$
 
 We have now replaced the product of 2 operands of length $l$ by 5 products, each with operands of length $l/3$ (hence the complexity).
@@ -188,58 +190,66 @@ We have now replaced the product of 2 operands of length $l$ by 5 products, each
 Remembering that $P(x) = \psi_4 \times x^4 + \psi_3 \times x^3 + \psi_2 \times x^2 + \psi_1 \times x + \psi_0$, we have a system of 5 linear equations:
 
 $$
+\begin{flalign*}
 \begin{cases}
 \psi_0 & = & P(0) \\
 16\ \psi_4 - 8\ \psi_3 + 4\ \psi_2 - 2\ \psi_1 + \psi_0 & = &  P(\text{-}2) \\
 \psi_4 - \psi_3 + \psi_2 - \psi_1 + \psi_0 & = &  P(\text{-}1) \\
 \psi_4 + \psi_3 + \psi_2 + \psi_1 + \psi_0 & = &  P(1) \\
 16\ \psi_4 + 8\ \psi_3 + 4\ \psi_2 + 2\ \psi_1 + \psi_0 & = &  P(2) \\
-\end{cases}
+\end{cases} &&
+\end{flalign*}
 $$ 
 
 We can solve it and deduce the values $\psi_i$ but was it the best we could do?<br/>
-Well... no and while we won't improve the complexity, we can slightly simplify the above equations.
+Well... no and while it won't improve the complexity, we can slightly simplify the above equations.
 
-The clue is to note that when $x \rightarrow \infty$, $P(x) \displaystyle \equiv p_4 \times x^4$ and $A(x) \times B(x) \equiv (a_2 \times x^2) \times (b_2 \times x^2) = a_2 \times b_2 \times x^4$.
+The clue is to note that when $x \rightarrow \infty$, $P(x) \displaystyle \equiv \psi_4 \times x^4$ and $A(x) \times B(x) \equiv (\alpha_2 \times x^2) \times (\beta_2 \times x^2) = \alpha_2 \times \beta_2 \times x^4$.
 
 The asymptotic behavior of $P$ results in a new "point", usually noted $P(\infty)$, defined as $P(\infty) = \psi_4 = \alpha_2 \times \beta_2$.<br/>
-This is much simpler than the above equations and gives $_\psi4$ directly. As such, it avoids some calculations.
+This is much simpler than the above equations and gives $\psi_4$ directly. As such, it avoids some calculations.
 
 Now, we can replace one of the points chosen above by $P(\infty)$. For instance, if $P(\text{-}2)$ is discarded.
 
 $$
+\begin{flalign*}
 \begin{cases}
 \psi_0 & = & P(0) \\
 \psi_4 & = & P(\infty) \\
 \psi_4 - \psi_3 + \psi_2 - \psi_1 + \psi_0 & = &  P(\text{-}1) \\
 \psi_4 + \psi_3 + \psi_2 + \psi_1 + \psi_0 & = &  P(1) \\
 16\ \psi_4 + 8\ \psi_3 + 4\ \psi_2 + 2\ \psi_1 + \psi_0 & = &  P(2) \\
-\end{cases}
+\end{cases} &&
+\end{flalign*}
 $$ 
 
 Which we solve into the following system, written in a way that makes it as convenient as possible for a computer:
 
 $$
+\begin{flalign*}
 \begin{cases}
 \psi_0 & = P(0) \\
 \psi_4 & = P(\infty) \\
 \psi_2 & = \big(P(\text{-}1) + P(1)\big) / 2 - \big(\psi_0 + \psi_4\big) \\
 \psi_3 & = \big[\psi_0 - 14\ \psi_4 + P(2) - 2\ \big(\psi_2 + P(1)\big)\big] / 6 \\
 \psi_1 & = P(1) - \big(\psi_0 + \psi_4 \big) - \big(\psi_2 + \psi_3\big)
-\end{cases}
+\end{cases} &&
+\end{flalign*}
 $$ 
 
 
 If it was $P(2)$ that was replaced by $P(\infty)$, the resulting coefficients would be expressed as:
 
 $$
+\begin{flalign*}
 \begin{cases}
 \psi_0 & = P(0) \\
 \psi_4 & = P(\infty) \\
 \psi_2 & =  \big(P(\text{-}1) + P(1)\big)/2 - \psi_0 - \psi_4 \\
 \psi_3 & =  \big[\text{‒}\ \psi_0 + 14\ \psi_4 - P(\text{-}2) + 2\ \big(\psi_2 + P(\text{-}1)\big)\big] / 6\\
 \psi_1 & = \big(P(1) - P(\text{-}1)\big)/2 - \psi_3\\
-\end{cases}
+\end{cases} &&
+\end{flalign*}
 $$ 
 
 
@@ -270,9 +280,9 @@ P(\infty)
 \end{pmatrix}
 $$
 
-### Illustration
+### Example application
 
-As big integers are coded with limbs in base $2^{32}$, the actual algorithm works in a base of the form ${2^{32}}^i$. Let alone numbers big enough for the algorithm to be efficient (they would need thousands of digits), even i = 1 would make it numbers too big for the illustration.
+As big integers are coded with limbs in base $2^{32}$, the actual algorithm works in a base of the form ${2^{32}}^i$. Let alone numbers big enough for the algorithm to be efficient (they would need thousands of digits), even i = 1 would make the numbers too big for an illustration; we are talking about multiplying 2 numbers whose scale is in the octillions (US/short form) or thousand quadrillions (European/long form), with a resulting product in the scale of Septendecillion (US) or Nonillion (European), i.e. over 50 base-10 digits. 
 
 For clarity's sake, the illustration is done with numbers under 10<sup>9</sup>, in a base 10<sup>k</sup> (convenient for human beings), then in a base 2<sup>k</sup> (convenient for computers).<br/>
 
@@ -283,32 +293,34 @@ $a = 123{,}456{,}789, \nobreakspace b=987{,}654{,}321$
 Since $\lceil \log_{10}(a) / 3 \rceil = \lceil \log_{10}(b) / 3 \rceil =  3$, we will work in base $10^3$:
 
 $$
-\begin{align*}
+\begin{flalign*}
 A(x) & = 123x^2 +456x + 789 & \big(a = A(10^3)\big)&& \\
 B(x) & = 987x^2+654x+321 & \big(b = B(10^3)\big)
-\end{align*}
+\end{flalign*}
 $$
+
 We calculate the 5 points $P(x) = A(x) \times B(x)$:
+
 $$
-\begin{align*}
+\begin{flalign*}
 P(\text{-}1) & = & 298{,}224 && \\
 P(0) & = & 253{,}269 & \\
 P(1) & = & 2{,}684{,}016 & \\
 P(2) & = &   12{,}230{,}361 &  \\
 P(\infty) & = & 121{,}401 & \\
-\end{align*} \\
+\end{flalign*} \\
 $$
 
-Applying the formulas we obtained from the linear equations, we deduce that $P(x) = 121{,}401 x^4 +  530{,}514 x^3 + 1{,}116{,}450 x^2 +  662{,}382 x +  253{,}269$ and therefore, thanks to an addiion of the shifted coefficients $\psi_i$, equivalent to multiplying them by ${10^3}^i$:
+Applying the formulas we obtained from the linear equations, we deduce that $P(x) = 121{,}401 x^4 +  530{,}514 x^3 + 1{,}116{,}450 x^2 +  662{,}382 x +  253{,}269$ and therefore, thanks to a sum of the shifted coefficients $\psi_i$, equivalent to multiplying them by ${10^3}^i$:
 
 ```math
 \begin{flalign*}
 \begin{array}{c}
-& & & & & & & & & & 253 & {,} & 269 & \\
-+ & & & & & & & & 662 & {,} & 382 & & & \\
-+ & & & & 1 & {,} & 116 & {,} & 450 & &  & & & \\
-+ & & & & 530 & {,} & 514 & & & & & & & \\
-+ & & \nobreakspace 121 & {,} & 401 & & & & & & & \\
+  \tiny {10^0 \times} & & & & & & & & & & 253 & {,} & 269 & \\
++ \tiny {10^3 \times} & & & & & & & & 662 & {,} & 382 & & & \\
++ \tiny {10^6 \times} & & & & 1 & {,} & 116 & {,} & 450 & &  & & & \\
++ \tiny {10^9 \times} & & & & 530 & {,} & 514 & & & & & & & \\
++ \tiny {10^{12} \times} & & \nobreakspace 121 & {,} & 401 & & & & & & & \\
 & \hline
 P(10^3)= & 121 & {,} & 932 & {,} & 631 & {,} & 112 & {,} & 635 & {,} & 269
 \end{array} & &
@@ -321,22 +333,22 @@ P(10^3)= & 121 & {,} & 932 & {,} & 631 & {,} & 112 & {,} & 635 & {,} & 269
 Since $\lceil \log_{2}(a) / 3 \rceil = 9$ and $\lceil \log_{2}(b) / 3 \rceil = 10$, we will work in base 2<sup>10</sup>:
 
 $$
-\begin{align*}
+\begin{flalign*}
 A(x) & = 117x^2 + 755x+277 & \big(a = A(2^{10})\big)&& \\
 B(x) & = 941x^2+922x + 177 & \big(b = B(2^{10})\big) 
-\end{align*}
+\end{flalign*}
 $$
 
 We calculate the 5 points $P(x) = A(x) \times B(x)$:
 
 $$
-\begin{align*}
+\begin{flalign*}
 P(\text{-}1) & = & \text{-}70{,}756 && \\
 P(0) & = & 49{,}029 & \\
 P(1) & = & 2{,}343{,}960 & \\
 P(2) & = &   13{,}045{,}175 &  \\
 P(\infty) & = & 110{,}097 & \\
-\end{align*} \\
+\end{flalign*} \\
 $$
 
 Applying the formulas we obtained from the linear equations, we deduce that $P(x) = 110{,}097 x^4 +  818{,}329 x^3 +  977{,}476 x^2 +  389{,}029 x +  49{,}029$.<br/>
