@@ -45,9 +45,9 @@ This is the same approach as every other library that implement multiplication t
 The long multiplication algorithm works on the principle that:
 
 $$
-\begin{align*}
-a * b = \Big(\sum_i 2^{32i} \times a_i \Big) \times \Big(\sum_j 2^{32j} \times b_j \Big)  = \large \sum_i \normalsize \sum_j \big(2^{32(i+j)} \times a_i \times b_j\big)
-\end{align*}
+\begin{flalign*}
+a * b = \Big(\sum_i 2^{32i} \times a_i \Big) \times \Big(\sum_j 2^{32j} \times b_j \Big)  = \large \sum_i \normalsize \sum_j \big(2^{32(i+j)} \times a_i \times b_j\big) &&
+\end{flalign*}
 $$
 
 The implementation is straight-forward. Indexing limbs of operands starting at index 0:
@@ -61,28 +61,28 @@ In practice, these 2 operations are done by doing $\big(\text{result}_{i+j} + a_
 5. At the end of the outer loop, a carry may remain. Do $p_{2l-1} \leftarrow c$.
 6. Trim $p$ if the carry was 0.
 
-[^1]: As determined in the [basics](./basics#), a 64-bit integer is enough to store the result of any 32-bit combination of the form: $a \times b + c + d$.
+[^1]: As determined in the [basics](./basics#), a 64-bit integer is enough to store the result of any 32-bit combination of the form: a x b + c + d.
 
 ## Karatsuba algorithm
 
 Karatsuba, from the name of its inventor, is a divide-and-conquer algorithm. Its principle run the multiplication as:
 
 $$
-\begin{align*}
-a \times b =  & \Bigg( \Big(\sum_{i < \lceil l/2 \rceil} 2^{32i} \times a_i \Big) + 2^{32\lceil l/2 \rceil} \times \Big(\sum_{i \geq \lceil l/2 \rceil} 2^{32(i-\lceil l/2 \rceil)} \times a_i \Big) \Bigg) \times \Bigg( \Big(\sum_{j < \lceil l/2 \rceil} 2^{32i} \times b_j \Big) + 2^{32\lceil l/2 \rceil} \times \Big(\sum_{j \geq \lceil l/2 \rceil} 2^{32(j- \lceil l/2 \rceil)} \times b_j \Big) \Bigg)
-\end{align*}
+\begin{flalign*}
+a \times b =  & \Bigg( \Big(\sum_{i < \lceil l/2 \rceil} 2^{32i} \times a_i \Big) + 2^{32\lceil l/2 \rceil} \times \Big(\sum_{i \geq \lceil l/2 \rceil} 2^{32(i-\lceil l/2 \rceil)} \times a_i \Big) \Bigg) \times \Bigg( \Big(\sum_{j < \lceil l/2 \rceil} 2^{32i} \times b_j \Big) + 2^{32\lceil l/2 \rceil} \times \Big(\sum_{j \geq \lceil l/2 \rceil} 2^{32(j- \lceil l/2 \rceil)} \times b_j \Big) \Bigg) &&
+\end{flalign*}
 $$
 
 For convenience, the 4 sums, i.e. substrings of the integers' limbs, appearing in the above formula will be noted with Greek letters: $\alpha_0, \alpha_1, \beta_0, \beta_1$ (we keep letters from the Latin alphabet to represent single limbs of a number).
 
 $$
-\begin{align*}
-a \times b = & \big( {\alpha_0} + 2^{32\lceil l/2 \rceil} \times \alpha_1) \times \big( \beta_0 + 2^{32\lceil l/2 \rceil} \times \beta_1) \\
+\begin{flalign*}
+a \times b = & \big( {\alpha_0} + 2^{32\lceil l/2 \rceil} \times \alpha_1) \times \big( \beta_0 + 2^{32\lceil l/2 \rceil} \times \beta_1) & \\
 = & \alpha_0 \times \beta_0 + 2^{64\lceil l/2 \rceil} \times \alpha_1 \times \beta_1 + 
 2^{32\lceil l/2 \rceil} \times \big(\alpha_0 \times \beta_1 + \alpha_1 \times \beta_0 \big) \\
 = & \alpha_0 \times \beta_0 + 2^{64\lceil l/2 \rceil} \times \alpha_1 \times \beta_1 + 
 2^{32\lceil l/2 \rceil} \times \Big(\big(\alpha_0 + \alpha_1 \big) \times \big(\beta_0 + \beta_1 \big) - \alpha_0 \times \beta_0 - \alpha_1 \times \beta_1 \Big)
-\end{align*}
+\end{flalign*}
 $$
 
 Although it looks like this just made the formula longer and more complicated, hence longer to calculate, the key to the algorithm is about being able to reuse $\alpha_0 \times \beta_0$ and $2^{64\lceil l/2 \rceil} \times \alpha_1 \times \beta_1$ where necessary.<br/>
@@ -288,7 +288,7 @@ For clarity's sake, the illustration is done with numbers under 10<sup>9</sup>, 
 
 $a = 123{,}456{,}789, \nobreakspace b=987{,}654{,}321$
 
-#### If limbs were expressed in base 1,000
+#### If limbs were expressed in base 10
 
 Since $\lceil \log_{10}(a) / 3 \rceil = \lceil \log_{10}(b) / 3 \rceil =  3$, we will work in base $10^3$:
 
