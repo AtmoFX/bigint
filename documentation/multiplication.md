@@ -1,6 +1,8 @@
 # Multiplication
 
-Development-wise, multiplication is an interesting operation because of its time complexity.<br/>
+The multiplication is possibly the most important of the 4 basic arithmetic operators in a big integer library. This is because it is the one most likely to work on and generate truly big numbers.
+
+Development-wise, it is an interesting operation because of its time complexity.<br/>
 The case to consider is the multiplication of 2 numbers $a$ and $b$ of roughly the same size, i.e. each made of a certain number $l$ of limbs. If e.g. $a$ was made of only 1 limb the complexity for the multiplication would simply be $\text{O}(l)$ (each limb of $b$ must be multiplied by $a$). Being limited to such a case would not make things interesting.
 
 In practice, operands rarely are of the exact same size but algorithms can easily cope with any difference and the theoretical considerations can be solved by filling the smaller number with leading zeroes.<br/>
