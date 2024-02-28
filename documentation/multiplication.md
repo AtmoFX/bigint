@@ -32,13 +32,13 @@ This is yet another algorithm more efficient that the ones above, but this time,
 The multiplication function compares the size of the operands passed to it with hardcoded threshold, which are the best guess as what values give the shortest calculation time:
 
 1. If $\text{size}(a) > \text{threshold}_\text{Schönhage–Strassen}$<br/>
-    $\rightarrow$ return the product calculated using the Schönhage–Strassen algorithm.
+    &rarr; return the product calculated using the Schönhage–Strassen algorithm.
 1. If $\text{size}(a) > \text{threshold}_\text{Toom-3}$<br/>
-    $\rightarrow$ return the product calculated using the Toom-3 algorithm.
+    &rarr; return the product calculated using the Toom-3 algorithm.
 1. If $\text{size}(a) > \text{threshold}_\text{Karatsuba}$<br/>
-    $\rightarrow$ return the product calculated using the Karatsuba algorithm.
+    &rarr; return the product calculated using the Karatsuba algorithm.
 1. Otherwise<br/>
-    $\rightarrow$ return the product calculated using the long multiplication algorithm.
+    &rarr; return the product calculated using the long multiplication algorithm.
 
 This is the same approach as every other library that implement multiplication through several algorithms, the only differences being what algorithms were implemented, small details inside them and the thresholds to decide which one to run.
 
