@@ -16,8 +16,7 @@ The other algorithms (addition, subtraction, ...) having a $\text{O}(l)$  comple
 
     The demonstration that better algorithms exist has triggered a decades-long effort by mathematicians to improve performance further and further. This resulted in several algorithms, each better than the previous and suitable for increasingly big numbers.
 - [Karatsuba](https://en.wikipedia.org/wiki/Karatsuba_algorithm ):<br/>
-Each time $l$ doubles, the Karatsuba algorithm trades 1 multiplication for several additions/subtractions, thus making it 3 multiplications instead of 4.
-The karatsuba algorithm is not suitable for multiplying (relatively) small numbers: it needs number of a certain side to make the 1 multiplication vs several additions/subtractions worth. <br/>
+Each time $l$ doubles, the Karatsuba algorithm trades 1 multiplication for several additions/subtractions, thus making it 3 multiplications instead of 4. The idea is that when $l$ is big enough, the cost of the additional operations is less than what the time saved by skipping the fourth multiplication. As a result, it is not suitable for multiplying (relatively) small numbers.<br/>
 The complexity is $\text{Θ}(l^{\log_2(3)}) = \text{O}(l^{1.585})$.
 - [Toom-Cook](https://en.wikipedia.org/wiki/Toom%E2%80%93Cook_multiplication) algorithms:<br/>
 The Toom-Cook algorithms form a family of divide-and-conquer algorithms similar to Karatsuba, except for the fact they are not limited to splitting operands in halves. The smaller the parts, the more multiplications it can trade against simpler operations. For this reason, each Toom-Cook algorithm needs longer and longer numbers to make the trade worth it.<br/>
