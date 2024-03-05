@@ -365,11 +365,11 @@ Different sequences can be generated depending on the first elements in the seri
 - The Lucas sequence starts with $l_0 = 2, l_1 = 1$.
 
 Thanks to overriding the starting point of a sequence, it is possible to save the state of a calculation to resume it later. This is akin to memoization except only $k$ consecutive values have to be saved rather than all values from index 1.<br/>
-As an example:
-- With $g_1 = f_{100} = 354{,}224{,}848{,}179{,}261{,}915{,}075$ and $g_2 = f_{101} = 573{,}147{,}844{,}013{,}817{,}084{,}101$
-- The relationship that links the Fibonacci sequence with that generalization is: $\forall n, g_n = f_{n+99}$.<br/>
-  For instance, $f_{199} = g_{100} = 173{,}402{,}521{,}172{,}797{,}813{,}159{,}685{,}037{,}284{,}371{,}942{,}044{,}301$ 
-
+As an example, the first element being at index 0:
+- With $g_0 = f_{100} = 354{,}224{,}848{,}179{,}261{,}915{,}075$ and $g_1 = f_{101} = 573{,}147{,}844{,}013{,}817{,}084{,}101$
+- The relationship that links the Fibonacci sequence with that generalization is: $\forall n, g_n = f_{n+100}$.<br/>
+  For instance, $f_{200} = g_{100} = 280{,}571{,}172{,}992{,}510{,}140{,}037{,}611{,}932{,}413{,}038{,}677{,}189{,}525$
+  
 #### Algorithm
 
 When calculating sequences with a different starting point, the iterative algorithm and the matrix exponantiation algorithm can both be used. In both cases, the function needs the first $k$ elements, noted $e_1, e_2, \dotsc, e_k$, to be able to compute the rest of the sequence:
