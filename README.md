@@ -2,7 +2,7 @@
 
 C++ header for big integers, with explanations.
 
-To get started, download the [single header file](https://github.com/source/bigint.h), include it in your code, and compile however you would.
+To get started, download the [single header file](https://github.com/AtmoFX/bigint/blob/master/source/bigint.h), include it in your code, and compile however you would.
 
 ## A summary of the project
 
