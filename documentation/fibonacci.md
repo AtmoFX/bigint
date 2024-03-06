@@ -32,7 +32,7 @@ void fibonacci(std::vector<bigint_t>& result, unsigned int from, unsigned int to
 ```
 
 For algorithmic complexity reasons, it returns consecutive Fibonacci numbers located at indices between `from` and `to`.<br/>
-We note $\text{fibonacci{<}}k\text{{>}}(n)$: $f^k_n$; the regular sequence terms $f^2_n$ are simplified as $f_n$. 
+We note `fibonacci<k>(n)`: $f^k_n$; the regular sequence terms $f^2_n$ are simplified as $f_n$. 
 
 ## Naive implementation
 
@@ -48,7 +48,7 @@ unsigned long long fibonacci(short n)
 ```
 
 This is of course highly inefficient: because each call creates 2 recursive branches, the complexity if exponential.<br/>
-More precisely, as $f_n$ branches reach $f_1$, by definition of the sequence, and since $\lim\limits_{n \rightarrow \infty}(f_n / f_{n-1}) = \large \text{φ}$, the complexity is $\text{Θ}(\large \text{φ} \normalsize ^n) = \text{O}(1.618034^n) = \text{O}(2^n)$.
+More precisely, as $f_n$ branches reach $f_1$ by definition of the sequence, and since $\lim\limits_{n \rightarrow \infty}(f_n / f_{n-1}) = \large \text{φ}$, the complexity is $\text{Θ}(\large \text{φ} \normalsize ^n) = \text{O}(1.618034^n) = \text{O}(2^n)$.
 
 With this approach:
 - $f_{40}$ takes about 1s. to calculate on modern PC (only the order of magnitude matters, not the exact duration).
@@ -56,7 +56,7 @@ With this approach:
 
 ## Alternative implementations
 
-Several approaches allow the execution time to be greatly cut, among which we can list the following.
+Temporarily setting aside the limitations 64-bit integers, several approaches allow the execution time to be greatly cut, among which we can list the following.
 
 ### Dynamic programming / memoization
 
@@ -81,7 +81,22 @@ With an associative container type and a little more work to save values on disk
 
 ### Calculation at compile-time
 
-With the template function below, it is possible to have the compiler save Fibonacci numbers in an array. This is an alternative to the above memoization approach, with the difference that the cache is compiled into the executable.
+A compile-time implementation may look like this:
+
+```c++
+template<unsigned int N> struct Fibonacci {
+    const static uint64_t value = Fibonacci<N - 1>::value + Fibonacci<N - 2>::value;
+};
+template<> struct Fibonacci<1> {
+    const static uint64_t value = 1;
+}
+template<> struct Fibonacci<0> {
+    const static uint64_t value = 0;
+}
+```
+
+Despite what it looks, compilation is near-instantaneous thanks to template instantiation being memoized. Execution is also near-instantaneous.<br/>
+Alternatively, the template function below saves Fibonacci numbers in an array. This is an alternative to the above memoization approach, with the difference that the cache is compiled into the executable.
 
 ```c++
 template<std::size_t N>
@@ -490,7 +505,7 @@ for (unsigned int i = minIndex + reportEvery; i <= maxIndex; i += reportEvery) {
     std::array<bigint::bigint_t, 2> restartFrom;
     std::swap(restartFrom[0], fiboResults[1]); std::swap(restartFrom[1], fiboResults[2]);
     fiboResults.clear();
-    bigint::fibonacci(fiboResults, reportEvery, reportEvery + 2, restartFrom);
+    bigint::fibonacci(fiboResults, reportEvery - 1, reportEvery + 1, restartFrom);
     std::cout << "Fibonacci(" << i << "):\n" << fiboResults[0].toString() << '\n';
 }
 ```
