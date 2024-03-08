@@ -1,3 +1,8 @@
+![License](https://img.shields.io/badge/License-MIT-blue)
+![Status](https://img.shields.io/badge/Status-alpha_release-lightgray)
+![Coverage](https://img.shields.io/badge/Coverage-100%25-limegreen)
+![Documentation](https://img.shields.io/badge/Documentation-In_progress-orange)
+
 # bigint
 
 C++ header for big integers, with explanations.
