@@ -33,7 +33,7 @@ This approach suffers from 2 downsides:
 
  ### Principle
 
- This library uses [exponantiation by squaring](https://simple.wikipedia.org/wiki/Exponentiation_by_squaring), which addresses the 2 downsides listed above.<br/>Exponantiation by squaring is an **important** algorithm, which is also used in the calculation of [Fibonacci numbers](fibonacci.md).
+ This library uses [exponentiation by squaring](https://simple.wikipedia.org/wiki/Exponentiation_by_squaring), which addresses the 2 downsides listed above.<br/>Exponentiation by squaring is an **important** algorithm, which is also used in the calculation of [Fibonacci numbers](fibonacci.md).
 
  Instead of simply multiplying $n$ by itself $\text{O}(p)$ times, we decompose $p$ into its separate digits $p_k, p_{k-1}, \dotsc, p_0$, when written in binary form.
 
