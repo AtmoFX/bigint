@@ -47,7 +47,7 @@ The long multiplication algorithm works on the principle that:
 
 $$
 \begin{flalign*}
-a * b = \Big(\sum_i 2^{32i} \times a_i \Big) \times \Big(\sum_j 2^{32j} \times b_j \Big)  = \large \sum_i \normalsize \sum_j \big(2^{32(i+j)} \times a_i \times b_j\big) &&
+a * b = \Big(\sum_i 2^{32i} \times a_i \Big) \times \Big(\sum_j 2^{32j} \times b_j \Big)  = \large \sum_i \normalsize \sum_j \big(2^{32(i+j)} \times a_i \times b_j\big)
 \end{flalign*}
 $$
 
@@ -151,12 +151,12 @@ For the sake of comparison, when the size of the operands is multiplied by 4, it
 ### Principle of Toom-Cook
 
 To understand Toom-Cook algorithms, we have to express big integers as the result of polynomials. Since big integers are encoded as limbs, it looks natural to express
-$a = \displaystyle \sum_{i \geq 0}  \limits a_i \times 2^{32i}$
+$\displaystyle a = \sum_{i \geq 0}  \limits a_i \times 2^{32i}$
 as the result of a polynomial: $a = A(2^{32})$
-where $A(x) = \displaystyle \sum_{i \geq 0}  \limits a_i \times x^i$.
+where $\displaystyle A(x) = \sum_{i \geq 0}  \limits a_i \times x^i$.
 
 This is not a polynomial expression we can use here, though. Toom-k splits operands in $k$ parts so we need to express them as a polynomial with $k$ coefficients, i.e. of degree $k-1$:<br/>
-$A(x) = \displaystyle \large \sum_{i=0}^{k-1} \bigg( \normalsize \sum_{j=0}^{\lceil l/k \rceil-1} a_{j + i \times \lceil l/k \rceil} \times 2^{32j} \bigg) \times x^i$, that we note $A(x) = \displaystyle \sum_{i=0}^{k-1} \alpha_i \times x^i$
+$\displaystyle A(x) = \large \sum_{i=0}^{k-1} \bigg( \normalsize \sum_{j=0}^{\lceil l/k \rceil-1} a_{j + i \times \lceil l/k \rceil} \times 2^{32j} \bigg) \times x^i$, that we note $\displaystyle A(x) = \sum_{i=0}^{k-1} \alpha_i \times x^i$
 
 The product $p = a \times b$ is now replaced by the polynomial $P$ of degree $2(k-1)$.
 
@@ -176,11 +176,11 @@ $$
 \begin{flalign*}
 \begin{cases}
 P(\text{-}2) & = & A(\text{-}2) & \times & B(\text{-}2) & = & (4\ \alpha_2 - 2\ \alpha_1 + \alpha_0) & \times & (4\ \beta_2 - 2\ \beta_1 + \beta_0) \\
-P(\text{-}1) & = & A(\text{-}1) & \times & B(\text{-}1)  & = & (\alpha_2 - \alpha_1 + \alpha_0) & \times & (\beta_2 - \beta_1 + \beta_0)\\
+P(\text{-}1) & = & A(\text{-}1) & \times & B(\text{-}1)  & = & (\alpha_2 - \alpha_1 + \alpha_0) & \times & (\beta_2 - \beta_1 + \beta_0) \\
 P(0) & = & A(0) & \times & B(0) & = & \alpha_0 & \times & \beta_0 \\
 P(1) & = & A(1) & \times & B(1) & = & (\alpha_2 + \alpha_1 + \alpha_0) & \times & (\beta_2 + \beta_1 + \beta_0) \\
 P(2) & = & A(2) & \times & B(2) & = & (4\ \alpha_2 + 2\ \alpha_1 + \alpha_0) & \times & (4\ \beta_2 + 2\ \beta_1 + \beta_0)
-\end{cases} &&
+\end{cases}
 \end{flalign*}
 $$
 
@@ -198,7 +198,7 @@ $$
 \psi_4 - \psi_3 + \psi_2 - \psi_1 + \psi_0 & = &  P(\text{-}1) \\
 \psi_4 + \psi_3 + \psi_2 + \psi_1 + \psi_0 & = &  P(1) \\
 16\ \psi_4 + 8\ \psi_3 + 4\ \psi_2 + 2\ \psi_1 + \psi_0 & = &  P(2) \\
-\end{cases} &&
+\end{cases}
 \end{flalign*}
 $$ 
 
@@ -220,7 +220,7 @@ $$
 \psi_4 - \psi_3 + \psi_2 - \psi_1 + \psi_0 & = &  P(\text{-}1) \\
 \psi_4 + \psi_3 + \psi_2 + \psi_1 + \psi_0 & = &  P(1) \\
 16\ \psi_4 + 8\ \psi_3 + 4\ \psi_2 + 2\ \psi_1 + \psi_0 & = &  P(2) \\
-\end{cases} &&
+\end{cases}
 \end{flalign*}
 $$ 
 
@@ -234,7 +234,7 @@ $$
 \psi_2 & = \big(P(\text{-}1) + P(1)\big) / 2 - \big(\psi_0 + \psi_4\big) \\
 \psi_3 & = \big[\psi_0 - 14\ \psi_4 + P(2) - 2\ \big(\psi_2 + P(1)\big)\big] / 6 \\
 \psi_1 & = P(1) - \big(\psi_0 + \psi_4 \big) - \big(\psi_2 + \psi_3\big)
-\end{cases} &&
+\end{cases}
 \end{flalign*}
 $$ 
 
@@ -249,7 +249,7 @@ $$
 \psi_2 & =  \big(P(\text{-}1) + P(1)\big)/2 - \psi_0 - \psi_4 \\
 \psi_3 & =  \big[\text{‒}\ \psi_0 + 14\ \psi_4 - P(\text{-}2) + 2\ \big(\psi_2 + P(\text{-}1)\big)\big] / 6\\
 \psi_1 & = \big(P(1) - P(\text{-}1)\big)/2 - \psi_3\\
-\end{cases} &&
+\end{cases}
 \end{flalign*}
 $$ 
 
@@ -324,7 +324,7 @@ Applying the formulas we obtained from the linear equations, we deduce that $P(x
 + \tiny {10^{12} \times} & & \nobreakspace 121 & {,} & 401 & & & & & & & \\
 & \hline
 P(10^3)= & 121 & {,} & 932 & {,} & 631 & {,} & 112 & {,} & 635 & {,} & 269
-\end{array} & &
+\end{array}
 \end{flalign*}
 ```
 
@@ -334,10 +334,10 @@ P(10^3)= & 121 & {,} & 932 & {,} & 631 & {,} & 112 & {,} & 635 & {,} & 269
 Since $\lceil \log_{2}(a) / 3 \rceil = 9$ and $\lceil \log_{2}(b) / 3 \rceil = 10$, we will work in base 2<sup>10</sup>:
 
 $$
-\begin{flalign*}
-A(x) & = 117x^2 + 755x+277 & \big(a = A(2^{10})\big)&& \\
+\begin{flalign}
+A(x) & = 117x^2 + 755x+277 & \big(a = A(2^{10})\big) & & \\
 B(x) & = 941x^2+922x + 177 & \big(b = B(2^{10})\big) 
-\end{flalign*}
+\end{flalign}
 $$
 
 We calculate the 5 points $P(x) = A(x) \times B(x)$:
