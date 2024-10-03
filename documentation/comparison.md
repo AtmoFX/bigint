@@ -50,17 +50,17 @@ The cases that could not be determined from signs alone, as listed above, are de
 7. Execute:
     ```c++
     switch (compare(a.limbs, b.limbs)) {
-        case -1: return std::strong_order::less;
+        case -1: return std::strong_ordering::less;
         case 0 : return std::strong_ordering::equal;
-        case 1 : return std:strong_ordering::greater;
+        case 1 : return std::strong_ordering::greater;
     }
     ```
 7. Execute:
     ```c++
     switch (compare(a.limbs, b.limbs)) {
-        case -1: return std::strong_order::greater;
+        case -1: return std::strong_ordering::greater;
         case 0 : return std::strong_ordering::equal;
-        case 1 : return std:strong_ordering::less;
+        case 1 : return std::strong_ordering::less;
     }
     ```
 
