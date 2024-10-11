@@ -111,14 +111,14 @@ In progress.
 
 [Power](https://github.com/AtmoFX/bigint/blob/master/documentation/power.md)<br/>
 The power function calculates $n^p = \overbrace{n \times n \times n \times \dotsc \times n}^{p\text{ times}}$.<br/>
-This is done with a complexity of $\text{O}(\text{log}(p))$.
+This is done with $\text{O}(\text{log}(p))$ multiplications.
 ```c++
 auto np bigint::power(123456789ULL, 62125); // 123456789 ^ 62125 
 ```
 
 [Factorials](https://github.com/AtmoFX/bigint/blob/master/documentation/factorial.md)<br/>
 The factorial function calculates $n! = 1 \times 2 \times 3 \times \dotsc \times n$ (typed: `size_t`).<br/>
-The function uses about half the multiplications that would normally be required for this calculation.
+The function uses about half the multiplications that would normally be required for this calculation and does so by pairing operands in a way that better uses the multiplication algorithms, compared to the naive approach.
 ```c++
 auto f = bigint::factorial(100000); // 100k!
 ```
