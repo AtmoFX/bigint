@@ -47,14 +47,18 @@ For the sake of clarity, we will illustrate each step with $`n = 20`$. The table
 
 ### Algorithm
 
-1. Initialize the result variable $`\text{result} \leftarrow 1`$.
-2. Determine $`p`$ so that $`2^p \times 3 \leq n`$. It is possible that $`2^p \times 5 \leq n`$.<br/>
+1. Initialize the variables $`\text{result} \leftarrow 1`$, $`\text{product} \leftarrow 1`$ and $`\text{c} \leftarrow 1`$.
+2. Determine $`h`$ so that $`2^h \leq n < 2^{h+1}`$.<br/>
+Initialize $`\text{shift} \leftarrow h \times (h+1) / 2`$
+3. Determine $`p`$ so that $`2^p \times 3 \leq n`$. It is possible that $`2^p \times 5 \leq n`$.<br/>
 Example: with $`n = 20`$: $`2^3 \times 3 = 24 \gt 20`$ and $`2^2 \times 3 = 12 \leq 20`$. This means $`p = 2`$.
-3. Initialize a variable $`\text{product} \leftarrow 3`$.
 4. Find the highest odd integer $`i`$ that verifies $`2^p \times i \leq n`$. With $`n = 20`$ and $`p = 2`$, that number is $`5`$ ($`2^2 \times 5 \leq 20`$).<br/>
-Multiply every **additional** odd number $`i`$ that verifies the above inequality together, into a product variable $p$, then do $\text{product} \leftarrow \text{product} \times p$.
+Do:<br/>
+   $`\text{shift} \leftarrow \text{shift} + p \times (i-1)/2`$<br/>
+   $`\displaystyle \text{product} \leftarrow \text{product} \times \prod_{\begin{array}\text{ } k = c+2 \\ k \text{ is odd} \end{array}}^i(k)\text{ }`$<br/>
+   $`c \leftarrow i`$.
  
-6. Do $`\text{result} \leftarrow \text{result} \times \text{product}`$
+5. Do $`\text{result} \leftarrow \text{result} \times \text{product}`$
 
 |1|2|3|4|5|6|7|8|9|10|11|<strike>12</strike>|13|14|15|16|17|18|19|<strike>20</strike>|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -76,7 +80,7 @@ Multiply every **additional** odd number $`i`$ that verifies the above inequalit
 |1|2|<strike>3</strike>|4|<strike>5</strike>|<strike>6</strike>|<strike>7</strike>|8|<strike>9</strike>|<strike>10</strike>|<strike>11</strike>|<strike>12</strike>|<strike>13</strike>|<strike>14</strike>|<strike>15</strike>|16|<strike>17</strike>|<strike>18</strike>|<strike>19</strike>|<strike>20</strike>|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
-7. All that remains is shift $`\text{result}`$ by the correct amount to account for all the even numbers.<br/>
+7. All that remains is shift the bits of $`\text{result}`$ by  $`\text{shift}`$ to account for all the even numbers.<br/>
 Doing so at the last step saves some execution time as all the previous multiplications did not have to browse through the additional limbs that shift creates.
 
 |1|<strike>2</strike>|<strike>3</strike>|<strike>4</strike>|<strike>5</strike>|<strike>6</strike>|<strike>7</strike>|<strike>8</strike>|<strike>9</strike>|<strike>10</strike>|<strike>11</strike>|<strike>12</strike>|<strike>13</strike>|<strike>14</strike>|<strike>15</strike>|<strike>16</strike>|<strike>17</strike>|<strike>18</strike>|<strike>19</strike>|<strike>20</strike>|
