@@ -4,7 +4,7 @@ The Fibonacci sequence is a well-known sequence of integers, defined as:
 
 $$
 \begin{flalign*}
-f_n = \begin{cases}
+&f_n = \begin{cases}
 0 & \text{ if } n = 0 \\
 1 & \text{ if } n = 1 \\
 f_{n-1} + f_{n-2} & \text{ if } n \geq 2
@@ -48,7 +48,7 @@ unsigned long long fibonacci(short n)
 ```
 
 This is of course highly inefficient: because each call creates 2 recursive branches, the complexity if exponential.<br/>
-More precisely, as $f_n$ branches reach $f_1$ by definition of the sequence, and since $\lim\limits_{n \rightarrow \infty}(f_n / f_{n-1}) = \large \text{φ}$, the complexity is $\text{Θ}(\large \text{φ} \normalsize ^n) = \text{O}(1.618034^n) = \text{O}(2^n)$.
+More precisely, as $f_n$ branches reach $f_1$ by definition of the sequence, and since $\lim_{n \rightarrow \infty}(f_n / f_{n-1}) = \large \text{φ}$, the complexity is $\text{Θ}(\large \text{φ} \normalsize ^n) = \text{O}(1.618034^n) = \text{O}(2^n)$.
 
 With this approach:
 - $f_{40}$ takes about 1s. to calculate on modern PC (only the order of magnitude matters, not the exact duration).
@@ -168,7 +168,7 @@ Note that by default, in any sequence or order $k$:
 
 $$
 \begin{flalign*}
-\begin{cases}
+&\begin{cases}
 \forall i < k-1, f^k_i = 0 \\
 f^k_{k-1} = f^k_k = 1
 \end{cases} & &
@@ -190,11 +190,11 @@ $$
 At higher orders of the sequence, the $k$ terms in the sum $f^k_i \leftarrow f^k_{i - k} + f^k_{i - k + 1} + \dotsc + f^k_{i - 1}$ can be optimized:
 
 $$
-\begin{flalign*}
-\forall i, f^k_i = \sum_{n = 1}^k f^k_{i - n} = & \text{  } \sum_{n = 1}^k f^k_{i - n} + f^k_{i-k-1} - f^k_{i-k-1} && \\
-= & \text{  } f^k_{i-1} +  \sum_{n = 2}^{k +1} f^k_{i - n} - f^k_{i-k-1} \\
-= & \text{  } 2 \times f^k_{i-1} - f^k_{i-k-1} 
-\end{flalign*}
+\begin{flalign}
+&\forall i, f^k_i = \sum_{n = 1}^k f^k_{i - n}&=&\text{  } \sum_{n = 1}^k f^k_{i - n} + f^k_{i-k-1} - f^k_{i-k-1} && \\
+&&=& \text{  } f^k_{i-1} +  \sum_{n = 2}^{k +1} f^k_{i - n} - f^k_{i-k-1} &&  \\
+&&=& \text{  } 2 \times f^k_{i-1} - f^k_{i-k-1} &&
+\end{flalign}
 $$
 
 At the cost of knowing $k+1$ consecutive elements of the Fibonacci series of order $k$ (1 more than would otherwise be required), it is possible to calculate all the next elements with only 2 basic operations; starting at $k=4$, this calculation is faster than simply applying the definition formula of the sequence.
@@ -208,7 +208,7 @@ The principle here is to perform exponantiation by squaring to a $2 \times 2$ ma
 
 $$
 \begin{flalign*}
-\mathscr{F}^2_n = 
+&\mathscr{F}^2_n = 
 \begin{pmatrix}
 1 & 1 \\
 1 & 0
@@ -232,7 +232,7 @@ Just like what happens at order 2, when the matrix is put to a power $n$, Fibona
 
 $$
 \begin{flalign*}
-\mathscr{F}^k_n =
+&\mathscr{F}^k_n =
 \begin{pmatrix}
 1 & 1 & 1 & \cdots & 1 & 1 \\
 1 & 0 & 0 & \cdots & 0 & 0 \\
@@ -316,7 +316,7 @@ Illustration with:
 
 $$
 \begin{flalign*}
-\mathscr{F}^5_{10} =
+&\mathscr{F}^5_{10} =
 \begin{pmatrix}
 464 & 448 & 417 & 356 & 236 \\
 236 & \color{blue}228 & 212 & 181 & \color{blue}120 \\
@@ -329,7 +329,7 @@ $$
 
 $$
 \begin{flalign*}
-\mathscr{F}^{10}_{12} =
+&\mathscr{F}^{10}_{12} =
 \begin{pmatrix}
 2045 & 2043 & 2039 & \color{red}2031 & 2015 & 1983 & 1919 & 1791 & 1535 & \color{red}1023 \\
 1023 & 1022 & 1020 & 1016 & \color{red}1008 & 992 & 960 & 896 & 768 & 512 \\
@@ -347,10 +347,10 @@ $$
 
 ```math
 \begin{flalign*}
-\color{blue}\mathscr{F}_{10}^5(2,2)    & = & 228  & = & 120 + 108   & = \;\; & \color{blue}\mathscr{F}_{10}^5(2,5)     \;\;\;\; & + \;\;\;\; \color{blue}\mathscr{F}_{10}^5(3,3) && \\
-\color{red}\mathscr{F}_{12}^{10}(1,4) & = & 2031 & = & 1023 + 1008 & = \;\; & \color{red}\mathscr{F}_{12}^{10}(1,10) \;\;\;\; & + \;\;\;\; \color{red}\mathscr{F}_{12}^{10}(2,5) \\
-\color{green}\mathscr{F}_{12}^{10}(3,8) & = & 448  & = & 256 + 192   & = \;\; & \color{green}\mathscr{F}_{12}^{10}(3,10) \;\;\;\; & + \;\;\;\; \color{green}\mathscr{F}_{12}^{10}(4,9) \\
-\color{orange}\mathscr{F}_{12}^{10}(4,3) & = & 127  & = & 128 + 127   & = \;\; & \color{orange}\mathscr{F}_{12}^{10}(4,10) \;\;\;\; & + \;\;\;\; \color{orange}\mathscr{F}_{12}^{10}(5,4)
+&\color{blue}\mathscr{F}_{10}^5(2,2)    & = & 228  & = & 120 + 108   & = \;\; & \color{blue}\mathscr{F}_{10}^5(2,5)     \;\;\;\; & + \;\;\;\; \color{blue}\mathscr{F}_{10}^5(3,3) && \\
+&\color{red}\mathscr{F}_{12}^{10}(1,4) & = & 2031 & = & 1023 + 1008 & = \;\; & \color{red}\mathscr{F}_{12}^{10}(1,10) \;\;\;\; & + \;\;\;\; \color{red}\mathscr{F}_{12}^{10}(2,5) \\
+&\color{green}\mathscr{F}_{12}^{10}(3,8) & = & 448  & = & 256 + 192   & = \;\; & \color{green}\mathscr{F}_{12}^{10}(3,10) \;\;\;\; & + \;\;\;\; \color{green}\mathscr{F}_{12}^{10}(4,9) \\
+&\color{orange}\mathscr{F}_{12}^{10}(4,3) & = & 127  & = & 128 + 127   & = \;\; & \color{orange}\mathscr{F}_{12}^{10}(4,10) \;\;\;\; & + \;\;\;\; \color{orange}\mathscr{F}_{12}^{10}(5,4)
 \end{flalign*}
 ```
 
@@ -413,8 +413,8 @@ Illustration with $k=4, e_1=4, e_2=8, e_3=1, e_4=3$
 
 $$
 \begin{flalign*}
-e_0 = 3 - 1 - 8- 4 = -10 &&\\
-\mathscr{M}_1^4 \leftarrow
+&e_0 = 3 - 1 - 8- 4 = -10 &&\\
+&\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & \color{red}? & \color{red}? & 1 \\
 1 & \color{red}? & \color{red}? & 8 \\
@@ -428,7 +428,7 @@ $$
 
 $$
 \begin{flalign*}
-\mathscr{M}_1^4 \leftarrow
+&\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & \color{red}? & 9 & 1 \\
 1 & \color{red}? & 12 & 8 \\
@@ -442,7 +442,7 @@ $$
 
 $$
 \begin{flalign*}
-\mathscr{M}_1^4 \leftarrow
+&\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
@@ -456,7 +456,7 @@ $$
 
 $$
 \begin{flalign*}
-\mathscr{M}_1^4 \leftarrow
+&\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
@@ -470,7 +470,7 @@ $$
 
 $$
 \begin{flalign*}
-\mathscr{M}_1^4 \leftarrow
+&\mathscr{M}_1^4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
