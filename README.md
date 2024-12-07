@@ -19,7 +19,7 @@ There are already many big integer libraries out there:
 - GMP (The GNU Multiple Precision Arithmetic Library) is by far the most well-known, and not only for integers.
 With more than 30 years since its first release, it has become the reference to achieve the best possible performance.<br/>
 It is also a very complex piece of work written in C and Assembler, hard to include in modern C++ projects (especially under Windows) and definitely not the easiest way to get an introduction to the underlying mathematics and algorithms.
-- Other libraries have a different offer: much more simple but for most of them, painfully slow (there are of course fast libraries too).<br/>
+- Other libraries have a different offer: much more simple but for most of them, painfully slow (and finding one of the few fast libraries inside a list that big is a challenge).<br/>
 Among the flaws of these "slow" libraries, we find:
    - Poorly written loops / memory management: some functions require only a few minutes of work to run in a fraction of the time.
    - Lack for the more complex but also more efficient algorithms, including libraries that claim they have implemented these optimizations.
