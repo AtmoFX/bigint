@@ -100,10 +100,21 @@ bigint_t x = a * b;
 ```
 
 Division / Mod<br/>
-In progress.
+Perform big integers division normally. The division is more complex and generally slower than even the multiplication, but it tends to be used less often and the results it produces are smaller than its passed operands.
+```c++
+bigint_t x = a / b, y = a % b;
+```
+
+Optimized algorithms and documentation are in progress.
 
 Input/Output of a `bigint_t`<br/>
-In progress.
+As the `bigint_t` class is a complex structure, showing their digits in a base other than than a power of 2 requires specialized functions. As for the rest, the library allows for big integers to be manipulated like regular integers.
+```c++
+std::string s = a.toString();
+std::cout << a;
+```
+
+Optimized algorithms and documentation are in progress.
  
  ### Advanced algorithms
 
