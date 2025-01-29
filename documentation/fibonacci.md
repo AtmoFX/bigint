@@ -204,35 +204,108 @@ Hopefully, as we are about to see, this is exactly what the matrix exponantiatio
 
 ### Matrix exponantiation
 
-The principle here is to perform exponantiation by squaring to a $2 \times 2$ matrix:
+#### Where does it come from?
+
+So far, the algorithms we have seen calculate each value of the sequence from its previous 2 values. Ideally, we would like to skip values such as calculating $f_n$ from $f_{n/2}$.
+
+To find such a method, we can consider the problem below:
+ - You have stairs made of $n$ steps labelled from 1 to $n$ (+ the ground, at level 0).
+ - Each time, you can climb 1 or 2 steps.
+ - How many distinct ways are there to climb the stairs?
+
+Let us call the answer $stairs(n)$. It is relatively easy to show it is a fibonacci number:
+
+ - For the first few values of $n$:
+    - There is 1 way to climb stairs made of a single step.
+    - There are 2 ways to climb stairs made of 2 steps.
+ - In the general case, you can count ways by deciding what happens for your first step:
+    - If you first climb 1 step, then you get $\text{stairs}(n-1)$ ways to finish climbing the $n-1$ steps.
+    - If you first climb 2 steps, then you get $\text{stairs}(n-2)$ ways to finish climbing the $n-2$ steps.
+    - As a result, you have $\text{stairs}(n-1) + \text{stairs}(n-2)$ way to climb the full stairs.
+
+All in all, $\text{stairs}(n) = f_{n+1}$.<br/>
+This result can be generalized to cases where you could climb between 1 and $k$ steps.
+
+The advantage of $stairs(n)$ over the Fibonacci sequence is that it makes it natural to think about other approaches to count the number of ways to climb stairs. For instance, if n is even:
+ 
+ - We first climb to the middle step (labelled $n/2$). From there, we climb the remaining $n/2$ steps.<br/>
+As both halves are independent, that gives us $\text{stairs}(n/2)^2$ paths.
+ - To that, we must add the paths that skip the middle step. It gives $\text{stairs}(n/2-1)^2$ ways to climb the stairs.
+ - A similar reasoning can be done for when n is odd.
+
+In the end:
 
 $$
 \begin{flalign*}
-&\mathscr{F}^2_n = 
-\begin{pmatrix}
-1 & 1 \\
-1 & 0
-\end{pmatrix}^n =
-\begin{pmatrix}
-f_{n+1} & f_n \\
-f_n & f_{n-1}
+&f_{n+1} = \text{stairs}(n) = \begin{cases}
+&1 & \text{ if } n \leq 2 \\
+&\text{stairs}(n/2)^2 + \text{stairs}(n/2-1)^2 & \text{ if } n \text{ is even } \\
+&\text{stairs}(\lfloor n/2 \rfloor) \times \big( 2 \times \text{stairs}(\lfloor n/2  \rfloor -1) + \text{stairs}(\lfloor n/2  \rfloor) \big) & \text{ if } n \text{ is odd }
+\end{cases} &&
+\end{flalign*}
+$$
+
+This idea to skip elements of the Fibonacci sequence in the calculation opens several ways to optimize the calculation. One such way is the matrix multiplication implemented in the library.
+
+#### Principle
+
+The principle is easier to understand for some higher order $k$ of the sequence.
+
+Let us consider this matrix:
+
+$$
+\begin{flalign*}
+&\mathscr{F}_{k} = \begin{pmatrix}
+1 & 1 & 1 & \cdots & 1 & 1 \\
+1 & 0 & 0 & \cdots & 0 & 0 \\
+0 & 1 & 0 & \cdots & 0 & 0 \\
+0 & 0 & 1 & \cdots & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & 0 & 0 & \cdots & 1 & 0
 \end{pmatrix} &&
 \end{flalign*}
 $$
 
-Again, exponantiation by squaring allows to get the result  faster than $\text{O}(n)$, the downside being we cannot get more than $k+1$ values.
-
-#### Matrices for higher order sequences
-
-At order $k$, the matrix used for exponantiation is of size $k \times k$, and filled with zeroes except for ones placed:
-- On the first row.
-- On the cells directly under the diagonal.
-
-Just like what happens at order 2, when the matrix is put to a power $n$, Fibonacci numbers appear:
+Then, when we do:
 
 $$
 \begin{flalign*}
-&\mathscr{F}^k_n =
+&\begin{pmatrix}
+1 & 1 & 1 & \cdots & 1 & 1 \\
+1 & 0 & 0 & \cdots & 0 & 0 \\
+0 & 1 & 0 & \cdots & 0 & 0 \\
+0 & 0 & 1 & \cdots & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & 0 & 0 & \cdots & 1 & 0
+\end{pmatrix} \times
+\begin{pmatrix}
+v_k \\
+v_{k-1} \\
+v_{k-2} \\
+v_{k-3} \\
+\vdots \\
+v_1
+\end{pmatrix} =
+\begin{pmatrix}
+\sum_{i=1}^k v_i\\
+v_{k} \\
+v_{k-1} \\
+v_{k-2} \\
+\vdots \\
+v_2
+\end{pmatrix} &&
+\end{flalign*}
+$$
+
+We notice the first row of $\mathscr{F}_k$ does the sum of the consecutive terms while the rest acts like a conveyor belt, moving the terms of the vector 1 row down.<br/>
+This is exactly what we need to advance 1 term in the Fibonacci sequence of order $k$.
+
+Starting with $f_0$, $f_1$, ... in a vector, we can get $f_n$ by multiplying it by $\mathscr{F}_2^{n}$.<br/>
+Exponantiation by squaring allows to get the result  faster than $\text{O}(n)$, the downside being we cannot get more than $k+1$ values
+
+$$
+\begin{flalign*}
+&\mathscr{F}^n_k =
 \begin{pmatrix}
 1 & 1 & 1 & \cdots & 1 & 1 \\
 1 & 0 & 0 & \cdots & 0 & 0 \\
@@ -250,8 +323,16 @@ f^k_n & \cdots & f^k_{n-1}
 \end{flalign*}
 $$
 
-The Fibonacci numbers appear only in the leftmost and the rightmost columns.<br/>
-The values in the middle are not ones we can return but it does not mean they are unimportant; we will see later what they are.
+For $k=2$, the matrix is:
+
+$$
+\begin{flalign*}
+&\mathscr{F}_2 = \begin{pmatrix}
+1 & 1 \\
+1 & 0 
+\end{pmatrix} &&
+\end{flalign*}
+$$
 
 #### Inputs
 
@@ -262,7 +343,7 @@ The algorithm's inputs are:
 
 #### Algorithm
 
-1. Calculate $\mathscr{F}^k_{\text{from} + 1} = \Big(\mathscr{F}^k_1 \Big)^{\text{from} + 1}$ using the same exponentiation by squaring algorithm as for the [power function](./power.md).
+1. Calculate $\mathscr{F}^{\text{from} + 1}_k$ using the same exponentiation by squaring algorithm as for the [power function](./power.md).
 2. Extract the Fibonacci numbers in the bottom-right cell and from the leftmost column of the matrix.<br/>
 The bottom-right value is ($f^k_\text{from}$); the values in the left column, from bottom to top, are $f^k_{\text{from}+1}, f^k_{\text{from}+2}, \dotsc, f^k_{\text{from}+k}$.
 
@@ -309,14 +390,14 @@ $$
 
 
 2. The other optimization comes from the fact that:<br/>
-$\forall k,n, \forall r,c \lt k, \mathscr{F}^k_n(r,c) = \mathscr{F}^k_n(r,k) + \mathscr{F}^k_n(r+1,c +1)$<br/>
-This means that except for the last row and the last column, every item of $\mathscr{F}^k_n$ can be calculated with a single addition, which is orders of magnitude faster than processing $k$ multiplications (+ $k-1$ additions).
+$\forall k,n, \forall r,c \lt k, \mathscr{F}^n_k(r,c) = \mathscr{F}^n_k(r,k) + \mathscr{F}^n_k(r+1,c +1)$<br/>
+This means that except for the last row and the last column, every item of $\mathscr{F}^n_k$ can be calculated with a single addition, which is orders of magnitude faster than processing $k$ multiplications (+ $k-1$ additions).
 
 Illustration with:
 
 $$
 \begin{flalign*}
-&\mathscr{F}^5_{10} =
+&\mathscr{F}^{10}_5 =
 \begin{pmatrix}
 464 & 448 & 417 & 356 & 236 \\
 236 & \color{blue}228 & 212 & 181 & \color{blue}120 \\
@@ -329,7 +410,7 @@ $$
 
 $$
 \begin{flalign*}
-&\mathscr{F}^{10}_{12} =
+&\mathscr{F}^{12}_{10} =
 \begin{pmatrix}
 2045 & 2043 & 2039 & \color{red}2031 & 2015 & 1983 & 1919 & 1791 & 1535 & \color{red}1023 \\
 1023 & 1022 & 1020 & 1016 & \color{red}1008 & 992 & 960 & 896 & 768 & 512 \\
@@ -347,10 +428,10 @@ $$
 
 ```math
 \begin{flalign*}
-&\color{blue}\mathscr{F}_{10}^5(2,2)    & = & 228  & = & 120 + 108   & = \;\; & \color{blue}\mathscr{F}_{10}^5(2,5)     \;\;\;\; & + \;\;\;\; \color{blue}\mathscr{F}_{10}^5(3,3) && \\
-&\color{red}\mathscr{F}_{12}^{10}(1,4) & = & 2031 & = & 1023 + 1008 & = \;\; & \color{red}\mathscr{F}_{12}^{10}(1,10) \;\;\;\; & + \;\;\;\; \color{red}\mathscr{F}_{12}^{10}(2,5) \\
-&\color{green}\mathscr{F}_{12}^{10}(3,8) & = & 448  & = & 256 + 192   & = \;\; & \color{green}\mathscr{F}_{12}^{10}(3,10) \;\;\;\; & + \;\;\;\; \color{green}\mathscr{F}_{12}^{10}(4,9) \\
-&\color{orange}\mathscr{F}_{12}^{10}(4,3) & = & 127  & = & 128 + 127   & = \;\; & \color{orange}\mathscr{F}_{12}^{10}(4,10) \;\;\;\; & + \;\;\;\; \color{orange}\mathscr{F}_{12}^{10}(5,4)
+&\color{blue}\mathscr{F}^{10}_5(2,2)    & = & 228  & = & 120 + 108   & = \;\; & \color{blue}\mathscr{F}_{10}^5(2,5)     \;\;\;\; & + \;\;\;\; \color{blue}\mathscr{F}_{10}^5(3,3) && \\
+&\color{red}\mathscr{F}^{12}_{10}(1,4) & = & 2031 & = & 1023 + 1008 & = \;\; & \color{red}\mathscr{F}_{12}^{10}(1,10) \;\;\;\; & + \;\;\;\; \color{red}\mathscr{F}_{12}^{10}(2,5) \\
+&\color{green}\mathscr{F}^{12}_{10}(3,8) & = & 448  & = & 256 + 192   & = \;\; & \color{green}\mathscr{F}_{12}^{10}(3,10) \;\;\;\; & + \;\;\;\; \color{green}\mathscr{F}_{12}^{10}(4,9) \\
+&\color{orange}\mathscr{F}^{12}_{10}(4,3) & = & 127  & = & 128 + 127   & = \;\; & \color{orange}\mathscr{F}_{12}^{10}(4,10) \;\;\;\; & + \;\;\;\; \color{orange}\mathscr{F}_{12}^{10}(5,4)
 \end{flalign*}
 ```
 
@@ -358,9 +439,9 @@ $$
 The combination of the above 2 rules allows to perform the multiplication by working our way up: 
 
 1. Calculate the bottom row using normal matrix multiplication.<br/>
-As per point 1. above, $\mathscr{F}^k_n(k, 1) = \mathscr{F}^k_n(k-1, k)$.
+As per point 1. above, $\mathscr{F}^n_k(k, 1) = \mathscr{F}^n_k(k-1, k)$.
 2. Let variable $r = k-1, c=k-1$.
-3. Do  $\mathscr{F}^k_n(r, c) = \mathscr{F}^k_n(r, k)+\mathscr{F}^k_n(r+1, c+1)$.
+3. Do  $\mathscr{F}^n_k(r, c) = \mathscr{F}^n_k(r, k)+\mathscr{F}^n_k(r+1, c+1)$.
 4. If $r=c=1$, stop.<br/>
 If $c>1$ do $c \leftarrow c - 1$.
 Otherwise, do $r \leftarrow r-1, c \leftarrow k-1$
@@ -390,17 +471,17 @@ As an example, the first element being at index 0:
 When calculating sequences with a different starting point, the iterative algorithm and the matrix exponantiation algorithm can both be used. In both cases, the function needs the first $k$ elements, noted $e_1, e_2, \dotsc, e_k$, to be able to compute the rest of the sequence:
 - For the iterative algorithm, the function simply has to substitute the first elements defined by default by those passed to it.
 - For the matrix exponantiation algorithm, a matrix of $k \times k$ elements needs to be defined from the $k$ input parameters.
-Interestingly, the same properties used to speed up the matrix multiplication can also be used to reconstruct the right matrix $\mathscr{M_1^k}$:
-1. For every row of the matrix, do: $`\mathscr{M}_1^k(r,1) = e_{k-r+1}`$.<br/>
+Interestingly, the same properties used to speed up the matrix multiplication can also be used to reconstruct the right matrix $\mathscr{M}_k$:
+1. For every row of the matrix, do: $`\mathscr{M}_k(r,1) = e_{k-r+1}`$.<br/>
 This operation automatically fills all but the last element of the last column of $\mathscr{M}_1^k$.
-2. Do $\mathscr{M}_1^k(k,k) = e_0 = e_k - (e_1 + e_2+\dotsc+e{k-1})$
+2. Do $\mathscr{M}_k(k,k) = e_0 = e_k - (e_1 + e_2+\dotsc+e{k-1})$
 3. Initialize variables $r = 1, c= k-1$.
-4. Do $\mathscr{M}_1^k(r,c) \leftarrow \mathscr{M}_1^k(r,k) + \mathscr{M}_1^k(r+1,c+1)$
+4. Do $\mathscr{M}_k(r,c) \leftarrow \mathscr{M}_k(r,k) + \mathscr{M}_k(r+1,c+1)$
 5. If $r = c = 2$, go to step 6.<br/>
 If $r \leq c$, do $r \leftarrow r + 1$.<br/>
 Otherwise, do $r \leftarrow 1, c \leftarrow c-1$.
 6. Do $r \leftarrow 3, c \leftarrow 2$.
-7. Do $\mathscr{M}_1^k(r,c) \leftarrow \mathscr{M}_1^k(r-1,c-1) - \mathscr{M}_1^k(r,k)$.
+7. Do $\mathscr{M}_k(r,c) \leftarrow \mathscr{M}_k(r-1,c-1) - \mathscr{M}_k(r,k)$.
 8. If $r=k \text{ and } c = k-2$, stop.<br/>
 If $r < k$, do $r \leftarrow r + 1$.
 Otherwise, do $c \leftarrow c + 1, r \leftarrow c+1$.
@@ -414,7 +495,7 @@ Illustration with $k=4, e_1=4, e_2=8, e_3=1, e_4=3$
 $$
 \begin{flalign*}
 &e_0 = 3 - 1 - 8- 4 = -10 &&\\
-&\mathscr{M}_1^4 \leftarrow
+&\mathscr{M}_4 \leftarrow
 \begin{pmatrix}
 3 & \color{red}? & \color{red}? & 1 \\
 1 & \color{red}? & \color{red}? & 8 \\
@@ -428,7 +509,7 @@ $$
 
 $$
 \begin{flalign*}
-&\mathscr{M}_1^4 \leftarrow
+&\mathscr{M}_4 \leftarrow
 \begin{pmatrix}
 3 & \color{red}? & 9 & 1 \\
 1 & \color{red}? & 12 & 8 \\
@@ -442,7 +523,7 @@ $$
 
 $$
 \begin{flalign*}
-&\mathscr{M}_1^4 \leftarrow
+&\mathscr{M}_4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
@@ -456,7 +537,7 @@ $$
 
 $$
 \begin{flalign*}
-&\mathscr{M}_1^4 \leftarrow
+&\mathscr{M}_4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
@@ -470,7 +551,7 @@ $$
 
 $$
 \begin{flalign*}
-&\mathscr{M}_1^4 \leftarrow
+&\mathscr{M}_4 \leftarrow
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
