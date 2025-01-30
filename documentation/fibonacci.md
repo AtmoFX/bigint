@@ -190,11 +190,11 @@ $$
 At higher orders of the sequence, the $k$ terms in the sum $f^k_i \leftarrow f^k_{i - k} + f^k_{i - k + 1} + \dotsc + f^k_{i - 1}$ can be optimized:
 
 $$
-\begin{flalign}
-&\forall i, f^k_i = \sum_{n = 1}^k f^k_{i - n}&=&\text{  } \sum_{n = 1}^k f^k_{i - n} + f^k_{i-k-1} - f^k_{i-k-1} && \\
-&&=& \text{  } f^k_{i-1} +  \sum_{n = 2}^{k +1} f^k_{i - n} - f^k_{i-k-1} &&  \\
-&&=& \text{  } 2 \times f^k_{i-1} - f^k_{i-k-1} &&
-\end{flalign}
+\begin{flalign*}
+ \forall i, f^k_i = \sum_{n = 1}^k f^k_{i - n} & = \sum_{n = 1}^k f^k_{i - n} + f^k_{i-k-1} - f^k_{i-k-1} && \\
+& = f^k_{i-1} +  \sum_{n = 2}^{k +1} f^k_{i - n} - f^k_{i-k-1} && \\
+& = 2 \times f^k_{i-1} - f^k_{i-k-1} &&
+\end{flalign*}
 $$
 
 At the cost of knowing $k+1$ consecutive elements of the Fibonacci series of order $k$ (1 more than would otherwise be required), it is possible to calculate all the next elements with only 2 basic operations; starting at $k=4$, this calculation is faster than simply applying the definition formula of the sequence.
