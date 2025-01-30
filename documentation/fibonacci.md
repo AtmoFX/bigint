@@ -204,54 +204,15 @@ Hopefully, as we are about to see, this is exactly what the matrix exponantiatio
 
 ### Matrix exponantiation
 
-#### Where does it come from?
-
-So far, the algorithms we have seen calculate each value of the sequence from its previous 2 values. Ideally, we would like to skip values such as calculating $f_n$ from $f_{n/2}$.
-
-To find such a method, we can consider the problem below:
- - You have stairs made of $n$ steps labelled from 1 to $n$ (+ the ground, at level 0).
- - Each time, you can climb 1 or 2 steps.
- - How many distinct ways are there to climb the stairs?
-
-Let us call the answer $stairs(n)$. It is relatively easy to show it is a fibonacci number:
-
- - For the first few values of $n$:
-    - There is 1 way to climb stairs made of a single step.
-    - There are 2 ways to climb stairs made of 2 steps.
- - In the general case, you can count ways by deciding what happens for your first step:
-    - If you first climb 1 step, then you get $\text{stairs}(n-1)$ ways to finish climbing the $n-1$ steps.
-    - If you first climb 2 steps, then you get $\text{stairs}(n-2)$ ways to finish climbing the $n-2$ steps.
-    - As a result, you have $\text{stairs}(n-1) + \text{stairs}(n-2)$ way to climb the full stairs.
-
-All in all, $\text{stairs}(n) = f_{n+1}$.<br/>
-This result can be generalized to cases where you could climb between 1 and $k$ steps.
-
-The advantage of $stairs(n)$ over the Fibonacci sequence is that it makes it natural to think about other approaches to count the number of ways to climb stairs. For instance, if n is even:
- 
- - We first climb to the middle step (labelled $n/2$). From there, we climb the remaining $n/2$ steps.<br/>
-As both halves are independent, that gives us $\text{stairs}(n/2)^2$ paths.
- - To that, we must add the paths that skip the middle step. It gives $\text{stairs}(n/2-1)^2$ ways to climb the stairs.
- - A similar reasoning can be done for when n is odd.
-
-In the end:
-
-$$
-\begin{flalign*}
-&f_{n+1} = \text{stairs}(n) = \begin{cases}
-&1 & \text{ if } n \leq 2 \\
-&\text{stairs}(n/2)^2 + \text{stairs}(n/2-1)^2 & \text{ if } n \text{ is even } \\
-&\text{stairs}(\lfloor n/2 \rfloor) \times \big( 2 \times \text{stairs}(\lfloor n/2  \rfloor -1) + \text{stairs}(\lfloor n/2  \rfloor) \big) & \text{ if } n \text{ is odd }
-\end{cases} &&
-\end{flalign*}
-$$
-
-This idea to skip elements of the Fibonacci sequence in the calculation opens several ways to optimize the calculation. One such way is the matrix multiplication implemented in the library.
-
 #### Principle
 
-The principle is easier to understand for some higher order $k$ of the sequence.
+So far, the algorithms we have seen calculate each value of the sequence from its previous 2 values. Ideally, we want a way to skip values such as calculating $f_n$ from $f_{n/2}$.
+One such way is the matrix multiplication implemented in the library.
 
-Let us consider this matrix:
+Let impllement the iterative algorithm for some higher order $k$ of the sequence (this makes it easier to understand).<br/>
+The calculation requires $k$ consecutive elements in a vector $`\mathscr{v}_{k}`$, that we want to transform into the next elements in the sequence by doing $`\mathscr{F}_{k} \times \mathscr{v}_{k}`$.
+
+With:
 
 $$
 \begin{flalign*}
@@ -297,11 +258,29 @@ v_2
 \end{flalign*}
 $$
 
-We notice the first row of $\mathscr{F}_k$ does the sum of the consecutive terms while the rest acts like a conveyor belt, moving the terms of the vector 1 row down.<br/>
-This is exactly what we need to advance 1 term in the Fibonacci sequence of order $k$.
+We notice the resulting vector is advanced by 1 item in the sequence, like we wanted. $\mathscr{F}_k$ is built so that:
+ - Its first row sums the consecutive terms to calculate the next Fibonacci element.
+ - The following rows, together, act like a conveyor belt, moving the terms of the vector 1 row down.
 
-Starting with $f_0$, $f_1$, ... in a vector, we can get $f_n$ by multiplying it by $\mathscr{F}_2^{n}$.<br/>
-Exponantiation by squaring allows to get the result  faster than $\text{O}(n)$, the downside being we cannot get more than $k+1$ values
+From the first $k$ elements of the sequence, getting to any arbitrary element can be done by doing $`\mathscr{F}_{k}^n \times \mathscr{v}_{k}`$.
+Exponentiation by squaring is what ultimately allows for making jumps in the sequence, skipping most elements.
+
+Initially,
+
+$$
+\begin{flalign*}
+&\mathscr{v}_{k} =
+\begin{pmatrix}
+1 \\
+0 \\
+0 \\
+\vdots \\
+0 \\
+\end{pmatrix} &&
+\end{flalign*}
+$$
+
+This means that once $\mathscr{F}^n_{k}$ is calculated, the multiplication with $\mathscr{v}_{k}$ is unnecessary. In fact, we find $k+1$ consecutive $f_n$ in the first and last columns of:
 
 $$
 \begin{flalign*}
@@ -323,7 +302,7 @@ f^k_n & \cdots & f^k_{n-1}
 \end{flalign*}
 $$
 
-For $k=2$, the matrix is:
+For $k=2$, the structure of matrix is not obvious, since it has only 1 row for its "conveyor belt":
 
 $$
 \begin{flalign*}
