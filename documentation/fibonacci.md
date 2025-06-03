@@ -209,7 +209,10 @@ Hopefully, as we are about to see, this is exactly what the matrix exponantiatio
 So far, the algorithms we have seen calculate each value of the sequence from its previous 2 values. Ideally, we want a way to skip values such as calculating $f_n$ from $f_{n/2}$.
 One such way is the matrix multiplication implemented in the library.
 
-Let impllement the iterative algorithm for some higher order $k$ of the sequence (this makes it easier to understand).<br/>
+Before we start, note that the matrices can be diagonalized, which could lead to the most efficient multiplication algorithm by far.
+However, this would also require multiplying real numbers at arbitrary precision. The library being restricted to integers means this algorithm is out of reach.
+
+Let's implement the iterative algorithm for some higher order $k$ of the sequence (this makes it easier to understand).<br/>
 The calculation requires $k$ consecutive elements in a vector $`\mathscr{v}_{k}`$, that we want to transform into the next elements in the sequence by doing $`\mathscr{F}_{k} \times \mathscr{v}_{k}`$.
 
 With:
