@@ -358,15 +358,16 @@ The above class implements matrix-to-array index correspondance as:
 
 $$
 \begin{pmatrix}
-0 & 1 & 2 & 3 & \cdots & \color{red}k-1 \\
-k-1 & k & k+1 & k+2 & \cdots & \color{red}2(k-1) \\
-2(k-1) & 2k-1 & 2k & 2k+1 & \cdots & \color{red}3(k-1) \\
+0 & 1 & 2 & 3 & \cdots & 🟥k-1🟥 \\
+k-1 & k & k+1 & k+2 & \cdots & 🟥2(k-1)🟥 \\
+2(k-1) & 2k-1 & 2k & 2k+1 & \cdots & 🟥3(k-1)🟥 \\
 \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
-(k-2)(k-1) & (k-2)(k-1)+1 & (k-2)(k-1)+2 & (k-2)(k-1)+3 & \cdots & \color{red}(k-1)^2 \\
+(k-2)(k-1) & (k-2)(k-1)+1 & (k-2)(k-1)+2 & (k-2)(k-1)+3 & \cdots & 🟥(k-1)^2🟥 \\
 (k-1)^2 & (k-1)^2+1 & (k-1)^2+2 & (k-1)^2+3 & \cdots & k^2-k
 \end{pmatrix}
 $$
 
+Elements marked with 🟥 are duplicates from the first column.
 
 2. The other optimization comes from the fact that:<br/>
 $\forall k,n, \forall r,c \lt k, \mathscr{F}^n_k(r,c) = \mathscr{F}^n_k(r,k) + \mathscr{F}^n_k(r+1,c +1)$<br/>
@@ -379,8 +380,8 @@ $$
 &\mathscr{F}^{10}_5 =
 \begin{pmatrix}
 464 & 448 & 417 & 356 & 236 \\
-236 & \color{blue}228 & 212 & 181 & \color{blue}120 \\
- 120 & 116 & \color{blue}108 & 92 & 61 \\
+236 & 🟦228🟦 & 212 & 181 & 🟦120🟦 \\
+ 120 & 116 & 🟦108🟦 & 92 & 61 \\
 61 & 59 & 55 & 47 & 31 \\
 31 & 30 & 28 & 24 & 16
 \end{pmatrix} &&
@@ -391,11 +392,11 @@ $$
 \begin{flalign*}
 &\mathscr{F}^{12}_{10} =
 \begin{pmatrix}
-2045 & 2043 & 2039 & \color{red}2031 & 2015 & 1983 & 1919 & 1791 & 1535 & \color{red}1023 \\
-1023 & 1022 & 1020 & 1016 & \color{red}1008 & 992 & 960 & 896 & 768 & 512 \\
-512 & 511 & 510 & 508 & 504 & 496 & 480 & \color{green}448 & 384 & \color{green}256 \\
-256 & 256 & \color{orange}255 & 254 & 252 & 248 & 240 & 224 & \color{green}192 & \color{orange}128 \\
-128 & 128 & 128 & \color{orange}127 & 126 & 124 & 120 & 112 & 96 & 64 \\
+2045 & 2043 & 2039 & 🟥2031🟥 & 2015 & 1983 & 1919 & 1791 & 1535 & 🟥1023🟥 \\
+1023 & 1022 & 1020 & 1016 & 🟥1008🟥 & 992 & 960 & 896 & 768 & 512 \\
+512 & 511 & 510 & 508 & 504 & 496 & 480 & 🟩448🟩 & 384 & 🟩256🟩 \\
+256 & 256 & 🟨255🟨 & 254 & 252 & 248 & 240 & 224 & 🟩192🟩 & 🟨128🟨 \\
+128 & 128 & 128 & 🟨127🟨 & 126 & 124 & 120 & 112 & 96 & 64 \\
 64 & 64 & 64 & 64 & 63 & 62 & 60 & 56 & 48 & 32 \\
 32 & 32 & 32 & 32 & 32 & 31 & 30 & 28 & 24 & 16 \\
 16 & 16 & 16 & 16 & 16 & 16 & 15 & 14 & 12 & 8 \\
@@ -407,10 +408,10 @@ $$
 
 ```math
 \begin{flalign*}
-&\color{blue}\mathscr{F}^{10}_5(2,2)    & = & 228  & = & 120 + 108   & = \;\; & \color{blue}\mathscr{F}_{10}^5(2,5)     \;\;\;\; & + \;\;\;\; \color{blue}\mathscr{F}_{10}^5(3,3) && \\
-&\color{red}\mathscr{F}^{12}_{10}(1,4) & = & 2031 & = & 1023 + 1008 & = \;\; & \color{red}\mathscr{F}_{12}^{10}(1,10) \;\;\;\; & + \;\;\;\; \color{red}\mathscr{F}_{12}^{10}(2,5) \\
-&\color{green}\mathscr{F}^{12}_{10}(3,8) & = & 448  & = & 256 + 192   & = \;\; & \color{green}\mathscr{F}_{12}^{10}(3,10) \;\;\;\; & + \;\;\;\; \color{green}\mathscr{F}_{12}^{10}(4,9) \\
-&\color{orange}\mathscr{F}^{12}_{10}(4,3) & = & 127  & = & 128 + 127   & = \;\; & \color{orange}\mathscr{F}_{12}^{10}(4,10) \;\;\;\; & + \;\;\;\; \color{orange}\mathscr{F}_{12}^{10}(5,4)
+&🟦\mathscr{F}^{10}_5(2,2)🟦    & = & 228  & = & 120 + 108   & = \;\; & 🟦\mathscr{F}_{10}^5(2,5)🟦     \;\;\;\; & + \;\;\;\; 🟦\mathscr{F}_{10}^5(3,3)🟦 && \\
+&🟥\mathscr{F}^{12}_{10}(1,4)🟥 & = & 2031 & = & 1023 + 1008 & = \;\; & 🟥\mathscr{F}_{12}^{10}(1,10)🟥 \;\;\;\; & + \;\;\;\; 🟥\mathscr{F}_{12}^{10}(2,5)🟥 \\
+&🟩\mathscr{F}^{12}_{10}(3,8)🟩 & = & 448  & = & 256 + 192   & = \;\; & 🟩\mathscr{F}_{12}^{10}(3,10)🟩 \;\;\;\; & + \;\;\;\; 🟩\mathscr{F}_{12}^{10}(4,9)🟩 \\
+&🟨\mathscr{F}^{12}_{10}(4,3)🟨 & = & 127  & = & 128 + 127   & = \;\; & 🟨\mathscr{F}_{12}^{10}(4,10)🟨 \;\;\;\; & + \;\;\;\; 🟨\mathscr{F}_{12}^{10}(5,4)🟨
 \end{flalign*}
 ```
 
@@ -476,10 +477,10 @@ $$
 &e_0 = 3 - 1 - 8- 4 = -10 &&\\
 &\mathscr{M}_4 \leftarrow
 \begin{pmatrix}
-3 & \color{red}? & \color{red}? & 1 \\
-1 & \color{red}? & \color{red}? & 8 \\
-8 & \color{red}? & \color{red}? & 4 \\
-4 & \color{red}? & \color{red}? & -10
+3 & ❓ & ❓ & 1 \\
+1 & ❓ & ❓ & 8 \\
+8 & ❓ & ❓ & 4 \\
+4 & ❓ & ❓ & -10
 \end{pmatrix}
 \end{flalign*}
 $$
@@ -490,10 +491,10 @@ $$
 \begin{flalign*}
 &\mathscr{M}_4 \leftarrow
 \begin{pmatrix}
-3 & \color{red}? & 9 & 1 \\
-1 & \color{red}? & 12 & 8 \\
-8 & \color{red}? & -6 & 4 \\
-4 & \color{red}? & \color{red}? & -10
+3 & ❓ & 9 & 1 \\
+1 & ❓ & 12 & 8 \\
+8 & ❓ & -6 & 4 \\
+4 & ❓ & ❓ & -10
 \end{pmatrix} &&
 \end{flalign*}
 $$
@@ -506,8 +507,8 @@ $$
 \begin{pmatrix}
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
-8 & \color{red}? & -6 & 4 \\
-4 & \color{red}? & \color{red}? & -10
+8 & ❓ & -6 & 4 \\
+4 & ❓ & ❓ & -10
 \end{pmatrix} &&
 \end{flalign*}
 $$
@@ -521,7 +522,7 @@ $$
 3 & 13 & 9 & 1 \\
 1 & 2 & 12 & 8 \\
 8 & -7 & -6 & 4 \\
-4 & 4 & \color{red}? & -10
+4 & 4 & ❓ & -10
 \end{pmatrix} &&
 \end{flalign*}
 $$
