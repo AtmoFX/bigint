@@ -40,7 +40,7 @@ In fact, it is possible to account for all the $`2`$'s encountered between $`1`$
 ### Principle
 
 Instead of the naive implementation, the implemented algorithm works "backward", with only odd numbers ($`3`$, $`5`$, $`7`$, $`9`$ ...). All the even numbers will be managed at once, by shifting bits left.<br/>
-For the sake of clarity, we will illustrate each step with $`n = 20`$. The table below represents the factors; when used, they get crossed out.
+For the sake of clarity, we will illustrate each step with $`n = 20`$. The table below represents the factors; when used, we will mark them with a 🟥.
 
 |1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -60,7 +60,7 @@ Do:<br/>
  
 5. Do $`\text{result} \leftarrow \text{result} \times \text{product}`$
 
-|1|2|3|4|5|6|7|8|9|10|11|<strike>12</strike>|13|14|15|16|17|18|19|<strike>20</strike>|
+|1|2|3|4|5|6|7|8|9|10|11|🟥|13|14|15|16|17|18|19|🟥|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
 6. If $`p > 0`$, do $`p \leftarrow p - 1`$ then go back to **step 4**.
@@ -69,7 +69,7 @@ Do:<br/>
     First: $`\text{product} \leftarrow \text{product} \times (7 \times 9)`$<br/>
     Then $`\text{result} \leftarrow \text{result} \times \text{product}`$
     
-|1|2|3|4|5|<strike>6</strike>|7|8|9|<strike>10</strike>|11|<strike>12</strike>|13|<strike>14</strike>|15|16|17|<strike>18</strike>|19|<strike>20</strike>|
+|1|2|3|4|5|🟥|7|8|9|🟥|11|🟥|13|🟥|15|16|17|🟥|19|🟥|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
   - At $`p = 0`$, the numbers are $`11`$, $`13`$, $`15`$, $`17`$ and $`19`$ and we consume all the factors that are not multiples of $`2`$.<br/>
@@ -77,14 +77,11 @@ Do:<br/>
     First: $`\text{product} \leftarrow \text{product} \times (11 \times 13 \times 15 \times 17 \times 19)`$<br/>
     Then $`\text{result} \leftarrow \text{result} \times \text{product}`$
 
-|1|2|<strike>3</strike>|4|<strike>5</strike>|<strike>6</strike>|<strike>7</strike>|8|<strike>9</strike>|<strike>10</strike>|<strike>11</strike>|<strike>12</strike>|<strike>13</strike>|<strike>14</strike>|<strike>15</strike>|16|<strike>17</strike>|<strike>18</strike>|<strike>19</strike>|<strike>20</strike>|
+|1|2|🟥|4|🟥|🟥|🟥|8|🟥|🟥|🟥|🟥|🟥|🟥|🟥|16|🟥|🟥|🟥|🟥|
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
-7. All that remains is shift the bits of $`\text{result}`$ by  $`\text{shift}`$ to account for all the even numbers.<br/>
+7. All that remains is shift the bits of $`\text{result}`$ by  $`\text{shift}`$ to account for all the even numbers encountered along the way.<br/>
 Doing so at the last step saves some execution time as all the previous multiplications did not have to browse through the additional limbs that shift creates.
-
-|1|<strike>2</strike>|<strike>3</strike>|<strike>4</strike>|<strike>5</strike>|<strike>6</strike>|<strike>7</strike>|<strike>8</strike>|<strike>9</strike>|<strike>10</strike>|<strike>11</strike>|<strike>12</strike>|<strike>13</strike>|<strike>14</strike>|<strike>15</strike>|<strike>16</strike>|<strike>17</strike>|<strike>18</strike>|<strike>19</strike>|<strike>20</strike>|
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
 ### Time savings
 
@@ -107,11 +104,15 @@ $`\text{product} \leftarrow \text{product} \times 3 = 3`$<br/>
 $`\text{result} \leftarrow \text{result} \times \text{product} = 3`$<br/>
 1 value, $`48`$, gets used up.
 
-|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|
-|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40|
-|41|42|43|44|45|46|47|<strike>48</strike>|49|50|51|52|53|54|55|56|57|58|59|60|
+|$`10\times`$|+0|+1|+2|+3|+4|+5|+6|+7|+8|+9|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|0|1|2|3|4|5|6|7|8|9|
+|1|10|11|12|13|14|15|16|17|18|19|
+|2|20|21|22|23|24|25|26|27|28|29|
+|3|30|31|32|33|34|35|36|37|38|39|
+|4|40|41|42|43|44|45|46|47|🟥|49|
+|5|50|51|52|53|54|55|56|57|58|59|
+|6|60|
 
 2. Second loop:<br/>
 $`p \leftarrow 3`$ ($`2^p = 8 `$)<br/>
@@ -119,11 +120,15 @@ $`\text{product} \leftarrow \text{product} \times (5 \times 7) = 105`$<br/>
 $`\text{result} \leftarrow \text{result} \times \text{product} = 315`$<br/>
 3 values, $`24`$, $`40`$ and $`56`$, get used up, with 3 multiplications done.
 
-|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|
-|21|22|23|<strike>24</strike>|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|<strike>40|
-|41|42|43|44|45|46|47|<strike>48</strike>|49|50|51|52|53|54|55|<strike>56</strike>|57|58|59|60|
+|$`10\times`$|+0|+1|+2|+3|+4|+5|+6|+7|+8|+9|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|0|1|2|3|4|5|6|7|8|9|
+|1|10|11|12|13|14|15|16|17|18|19|
+|2|20|21|22|23|🟥|25|26|27|28|29|
+|3|30|31|32|33|34|35|36|37|38|39|
+|4|🟥|41|42|43|44|45|46|47|🟥|49|
+|5|50|51|52|53|54|55|🟥|57|58|59|
+|6|60|
 
 3. Third loop:<br/>
 $`p \leftarrow 2`$ ($`2^p = 4 `$)<br/>
@@ -131,11 +136,15 @@ $`\text{product} \leftarrow \text{product} \times (9 \times 11 \times 13 \times 
 $`\text{result} \leftarrow \text{result} \times \text{product} = 638{,}512{,}875`$<br/>
 7 values, $`12`$, $`20`$, $`28`$, $`36`$, $`44`$, $`52`$ and $`60`$, get used up, with 5 multiplications done.
 
-|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-|1|2|3|4|5|6|7|8|9|10|11|<strike>12</strike>|13|14|15|16|17|18|19|<strike>20</strike>|
-|21|22|23|<strike>24</strike>|25|26|27|<strike>28</strike>|29|30|31|32|33|34|35|<strike>36</strike>|37|38|39|<strike>40</strike>|
-|41|42|43|<strike>44</strike>|45|46|47|<strike>48</strike>|49|50|51|<strike>52</strike>|53|54|55|<strike>56</strike>|57|58|59|<strike>60</strike>|
+|$`10\times`$|+0|+1|+2|+3|+4|+5|+6|+7|+8|+9|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|0|1|2|3|4|5|6|7|8|9|
+|1|10|11|🟥|13|14|15|16|17|18|19|
+|2|🟥|21|22|23|🟥|25|26|27|🟥|29|
+|3|30|31|32|33|34|35|🟥|37|38|39|
+|4|🟥|41|42|43|🟥|45|46|47|🟥|49|
+|5|50|51|🟥|53|54|55|🟥|57|58|59|
+|6|🟥|
 
 4. Fourth loop:<br/>
 $`p \leftarrow 1`$ ($`2^p = 2`$)<br/>
@@ -143,11 +152,15 @@ $`\text{product} \leftarrow \text{product} \times (17 \times 19 \times 21 \times
 $`\text{result} \leftarrow \text{result} \times \text{product} = 3{,}952{,}575{,}621{,}190{,}533{,}915{,}703{,}125`$<br/>
 14 values, $`6`$, $`10`$, $`14`$, $`18`$, $`22`$, $`26`$, $`30`$, $`34`$, $`38`$, $`42`$, $`46`$, $`50`$, $`54`$ and $`58`$, get used up, with 8 multiplications done.
 
-|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-|1|2|3|4|5|<strike>6</strike>|7|8|9|<strike>10</strike>|11|<strike>12</strike>|13|<strike>14</strike>|15|16|17|<strike>18</strike>|19|<strike>20</strike>|
-|21|<strike>22</strike>|23|<strike>24</strike>|25|<strike>26</strike>|27|<strike>28</strike>|29|<strike>30</strike>|31|32|33|<strike>34</strike>|35|<strike>36</strike>|37|<strike>38</strike>|39|<strike>40</strike>|
-|41|<strike>42</strike>|43|<strike>44</strike>|45|<strike>46</strike>|47|<strike>48</strike>|49|<strike>50</strike>|51|<strike>52</strike>|53|<strike>54</strike>|55|<strike>56</strike>|57|<strike>58</strike>|59|<strike>60</strike>|
+|$`10\times`$|+0|+1|+2|+3|+4|+5|+6|+7|+8|+9|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|0|1|2|3|4|5|🟥|7|8|9|
+|1|🟥|11|🟥|13|🟥|15|16|17|🟥|19|
+|2|🟥|21|🟥|23|🟥|25|🟥|27|🟥|29|
+|3|🟥|31|32|33|🟥|35|🟥|37|🟥|39|
+|4|🟥|41|🟥|43|🟥|45|🟥|47|🟥|49|
+|5|🟥|51|🟥|53|🟥|55|🟥|57|🟥|59|
+|6|🟥|
 
 5. Fifth loop:<br/>
 $`p \leftarrow 0`$ ($`2^p = 1`$)<br/>
@@ -155,11 +168,15 @@ $`\text{product} \leftarrow \text{product} \times (31 \times 33 \times 35 \times
 $`\text{result} \leftarrow \text{result} \times \text{product} = 115{,}476{,}893{,}502{,}183{,}682{,}653{,}166{,}335{,}352{,}659{,}171{,}719{,}555{,}028{,}600{,}718{,}376{,}458{,}740{,}234{,}375`$<br/>
 29 values, $`3`$, $`5`$, $`7`$, $`9`$, $`11`$, $`13`$, $`15`$, $`17`$, $`19`$, ..., $`51`$, $`53`$, $`55`$, $`57`$ and $`59`$, get used up, with 16 multiplications done.
 
-|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-|1|2|<strike>3</strike>|4|<strike>5</strike>|<strike>6</strike>|<strike>7</strike>|8|<strike>9</strike>|<strike>10</strike>|<strike>11</strike>|<strike>12</strike>|<strike>13</strike>|<strike>14</strike>|<strike>15</strike>|16|<strike>17</strike>|<strike>18</strike>|<strike>19</strike>|<strike>20</strike>|
-|<strike>21|<strike>22</strike>|<strike>23</strike>|<strike>24</strike>|<strike>25|<strike>26</strike>|<strike>27</strike>|<strike>28</strike>|<strike>29</strike>|<strike>30</strike>|<strike>31</strike>|32|<strike>33</strike>|<strike>34</strike>|<strike>35</strike>|<strike>36</strike>|<strike>37</strike>|<strike>38</strike>|<strike>39</strike>|<strike>40</strike>|
-|<strike>41</strike>|<strike>42</strike>|<strike>43</strike>|<strike>44</strike>|<strike>45|<strike>46</strike>|<strike>47|<strike>48</strike>|<strike>49|<strike>50</strike>|<strike>51|<strike>52</strike>|<strike>53</strike>|<strike>54</strike>|<strike>55</strike>|<strike>56</strike>|<strike>57</strike>|<strike>58</strike>|<strike>59</strike>|<strike>60</strike>|
+|$`10\times`$|+0|+1|+2|+3|+4|+5|+6|+7|+8|+9|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|0|1|2|🟥|4|🟥|🟥|🟥|8|🟥|
+|1|🟥|🟥|🟥|🟥|🟥|🟥|16|🟥|🟥|🟥|
+|2|🟥|🟥|🟥|🟥|🟥|🟥|🟥|🟥|🟥|🟥|
+|3|🟥|🟥|32|🟥|🟥|🟥|🟥|🟥|🟥|🟥|
+|4|🟥|🟥|🟥|🟥|🟥|🟥|🟥|🟥|🟥|🟥|
+|5|🟥|🟥|🟥|🟥|🟥|🟥|🟥|🟥|🟥|🟥|
+|6|🟥|
 
 6. Finalizing:<br/>
 The powers of 2 under $`n=60`$ account for 15 bits to shift ($`2^0`$, $`2^1`$, $`2^2`$, $`2^3`$, $`2^4`$, $`2^5`$).<br/>
